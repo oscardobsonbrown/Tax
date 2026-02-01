@@ -1,65 +1,121 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
+  const [salary, setSalary] = useState("");
+  const [wealth, setWealth] = useState("");
+
+  const formatCurrency = (value: string) => {
+    return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSalary(e.target.value);
+  };
+
+  const handleWealthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWealth(e.target.value);
+  };
+
+  const getCountryUrl = (country: string) => {
+    const params = new URLSearchParams();
+    if (salary) params.set("salary", salary.replace(/\s/g, ""));
+    if (wealth) params.set("wealth", wealth.replace(/\s/g, ""));
+    const paramString = params.toString();
+    return paramString
+      ? `/country/${country}?${paramString}`
+      : `/country/${country}`;
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div style={{ backgroundColor: '#FFFFFF', boxSizing: 'border-box', fontSynthesis: 'none', MozOsxFontSmoothing: 'grayscale', overflow: 'clip', WebkitFontSmoothing: 'antialiased', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', position: 'relative', paddingBlock: '32px' }}>
+      <div style={{ alignItems: 'start', borderBottomColor: '#E5E5E5', borderBottomStyle: 'solid', borderBottomWidth: '1px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 3, height: 'fit-content', paddingBottom: '16px', paddingLeft: 0, paddingRight: 0, paddingTop: 0, width: '512px', flexShrink: 0 }}>
+        <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+          TAX
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div style={{ boxSizing: 'border-box', color: '#7D7D7D', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+          Calculate, visualize, and compare global taxes
         </div>
-      </main>
+      </div>
+
+      <div style={{ alignItems: 'start', borderBottomColor: '#E5E5E5', borderBottomStyle: 'solid', borderBottomWidth: '1px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 24, height: 'fit-content', paddingBlock: '48px', paddingInline: 0, width: 'fit-content', marginTop: '52px', flexShrink: 0 }}>
+        <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+          COUNTRIES
+        </div>
+        <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', flexShrink: '0', gap: '8px', height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
+          <Link
+            href={getCountryUrl("no")}
+            style={{ textDecoration: 'none' }}
+          >
+            <div
+              style={{ alignItems: 'center', borderColor: '#CCCCCC', borderStyle: 'solid', borderWidth: '1px', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 371, height: 'fit-content', paddingBlock: '16px', paddingInline: '15px', width: 'fit-content', transition: 'border-color 0.15s ease' }}
+              onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#999999'}
+              onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#CCCCCC'}
+            >
+              <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', flexShrink: '0', gap: 4, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
+                <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 7, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
+                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                    🇳🇴
+                  </div>
+                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                    Norway
+                  </div>
+                </div>
+                <div style={{ boxSizing: 'border-box', color: '#7F7F7F', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                  2026 Tax Year
+                </div>
+              </div>
+              <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                {'->'}
+              </div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("au")}
+            style={{ textDecoration: 'none' }}
+          >
+            <div
+              style={{ alignItems: 'center', borderColor: '#CCCCCC', borderStyle: 'solid', borderWidth: '1px', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 371, height: 'fit-content', paddingBlock: '16px', paddingInline: '15px', width: 'fit-content', transition: 'border-color 0.15s ease' }}
+              onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#999999'}
+              onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#CCCCCC'}
+            >
+              <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', flexShrink: '0', gap: 4, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
+                <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 7, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
+                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                    🇦🇺
+                  </div>
+                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                    Australia
+                  </div>
+                </div>
+                <div style={{ boxSizing: 'border-box', color: '#7F7F7F', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                  2026 Tax Year
+                </div>
+              </div>
+              <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
+                {'->'}
+              </div>
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 11 }}>
+        <div style={{ boxSizing: 'border-box', height: '25px', width: '25px' }}>
+          <div style={{ backgroundColor: '#DDDDDD', borderRadius: '7px', boxSizing: 'border-box', height: '25px', position: 'relative', top: 0, left: 0, width: '25px' }} />
+        </div>
+        <div style={{ boxSizing: 'border-box', color: '#7F7F7F', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', lineHeight: '16px', textAlign: 'center' }}>
+          Tax calculators and visualizations for informational purposes only
+        </div>
+        <div style={{ boxSizing: 'border-box', color: '#7F7F7F', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', lineHeight: '16px', textAlign: 'center' }}>
+          ©2026
+        </div>
+        <div style={{ boxSizing: 'border-box', color: '#7F7F7F', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', lineHeight: '16px', textAlign: 'center' }}>
+          - Oscar
+        </div>
+      </div>
     </div>
   );
 }
