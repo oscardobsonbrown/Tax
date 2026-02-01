@@ -1,3 +1,31 @@
+export type Currency = "AUD" | "NOK" | "USD" | "EUR" | "GBP";
+
+export const CURRENCY_NAMES: Record<Currency, string> = {
+  AUD: "Australian Dollar",
+  NOK: "Norwegian Krone",
+  USD: "US Dollar",
+  EUR: "Euro",
+  GBP: "British Pound",
+};
+
+export const CURRENCY_SYMBOLS: Record<Currency, string> = {
+  AUD: "A$",
+  NOK: "kr",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+};
+
+// Exchange rates (base: 1 AUD)
+// These should be updated with real-time rates in production
+export const EXCHANGE_RATES: Record<Currency, number> = {
+  AUD: 1,
+  NOK: 6.8,
+  USD: 0.65,
+  EUR: 0.60,
+  GBP: 0.51,
+};
+
 export interface TaxBracket {
   min: number;
   max: number | null;
@@ -253,6 +281,29 @@ export function formatRate(rate: number): string {
   return `${rate.toFixed(1)}%`;
 }
 
+export function convertCurrency(
+  amount: number,
+  from: Currency,
+  to: Currency,
+): number {
+  if (from === to) return amount;
+  const rate = EXCHANGE_RATES[to] / EXCHANGE_RATES[from];
+  return amount * rate;
+}
+
+export function getCountryCurrency(country: string): Currency {
+  switch (country.toLowerCase()) {
+    case "no":
+    case "norway":
+      return "NOK";
+    case "au":
+    case "australia":
+      return "AUD";
+    default:
+      return "AUD";
+  }
+}
+
 export function getTaxData(country: string) {
   switch (country.toLowerCase()) {
     case "no":
@@ -266,6 +317,7 @@ export function getTaxData(country: string) {
         employerRate: "14.1%",
         employerNote:
           "Your employer also pays 14.1% employer tax on top of your salary. This isn't deducted from your pay, but it's part of total cost of employing you.",
+        currency: "NOK" as Currency,
       };
     case "au":
     case "australia":
@@ -278,6 +330,7 @@ export function getTaxData(country: string) {
         employerRate: "11.5%",
         employerNote:
           "Your employer pays 11.5% superannuation on top of your salary. This is invested in a super fund for your retirement.",
+        currency: "AUD" as Currency,
       };
     default:
       throw new Error(`Country ${country} not supported`);
