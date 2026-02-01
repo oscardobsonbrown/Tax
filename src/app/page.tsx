@@ -11,6 +11,7 @@ function HomeContent() {
   const [salary, setSalary] = useState(searchParams.get("salary") || "");
   const [wealth, setWealth] = useState(searchParams.get("wealth") || "");
   const [currency, setCurrency] = useState<Currency>((searchParams.get("currency") as Currency) || "AUD");
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const updateUrl = (newSalary: string, newWealth: string, newCurrency: Currency) => {
     const url = new URL(window.location.href);
@@ -57,47 +58,66 @@ function HomeContent() {
         <div className="text-zinc-500">Calculate, visualize, and compare global taxes</div>
       </div>
 
-      <div className="mt-12 w-full max-w-[512px] border-b border-gray-200 pb-8">
-        <div className="mb-4 text-black">YOUR DETAILS</div>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <div className="text-zinc-500">Currency</div>
-            <select
-              value={currency}
-              onChange={(e) => handleCurrencyChange(e.target.value as Currency)}
-              className="border border-gray-300 px-4 py-3 text-black outline-none transition-colors hover:border-gray-600 focus:border-black bg-white"
-            >
-              {(Object.keys(CURRENCY_NAMES) as Currency[]).map((c) => (
-                <option key={c} value={c}>
-                  {c} - {CURRENCY_NAMES[c]}
-                </option>
-              ))}
-            </select>
+      <div className="mt-8 w-full max-w-[512px]">
+        <button
+          type="button"
+          onClick={() => setDetailsOpen(!detailsOpen)}
+          className="w-full flex items-center justify-between border border-gray-300 px-4 py-3 transition-colors hover:border-gray-600"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-black">YOUR DETAILS</span>
+            {!detailsOpen && (salary || wealth) && (
+              <span className="text-zinc-500 text-xs">
+                {currency} {salary || "0"} {wealth && `/ ${wealth}`}
+              </span>
+            )}
           </div>
-          <div className="flex flex-col gap-2">
-            <div className="text-zinc-500">Gross income</div>
-            <input
-              type="text"
-              value={salary}
-              onChange={handleSalaryChange}
-              placeholder="0"
-              className="border border-gray-300 px-4 py-3 text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
-            />
+          <span className="text-zinc-400 text-xs">{detailsOpen ? "−" : "+"}</span>
+        </button>
+
+        {detailsOpen && (
+          <div className="border-x border-b border-gray-300 px-4 py-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <div className="text-zinc-500 text-xs">Currency</div>
+                <select
+                  value={currency}
+                  onChange={(e) => handleCurrencyChange(e.target.value as Currency)}
+                  className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black bg-white"
+                >
+                  {(Object.keys(CURRENCY_NAMES) as Currency[]).map((c) => (
+                    <option key={c} value={c}>
+                      {c} - {CURRENCY_NAMES[c]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="text-zinc-500 text-xs">Gross income</div>
+                <input
+                  type="text"
+                  value={salary}
+                  onChange={handleSalaryChange}
+                  placeholder="0"
+                  className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="text-zinc-500 text-xs">Net wealth</div>
+                <input
+                  type="text"
+                  value={wealth}
+                  onChange={handleWealthChange}
+                  placeholder="0"
+                  className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <div className="text-zinc-500">Net wealth</div>
-            <input
-              type="text"
-              value={wealth}
-              onChange={handleWealthChange}
-              placeholder="0"
-              className="border border-gray-300 px-4 py-3 text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
-            />
-          </div>
-        </div>
+        )}
       </div>
 
-      <div className="mt-12 w-full max-w-[512px] border-b border-gray-200 py-12">
+      <div className="mt-8 w-full max-w-[512px] border-t border-gray-200 pt-8">
         <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
           <Link
