@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-white p-8 pb-32 font-mono text-sm antialiased">
+    <div className="flex min-h-screen flex-col items-center bg-white px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
       <div className="w-full max-w-[512px] border-b border-gray-200 pb-4">
         <div className="text-black">TAX</div>
         <div className="text-zinc-500">Calculate, visualize, and compare global taxes</div>
@@ -43,7 +43,7 @@ export default function Home() {
             href={getCountryUrl("no")}
             className="no-underline"
           >
-            <div className="flex items-center justify-between border border-gray-300 px-2 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <div className="text-black">🇳🇴</div>
@@ -58,7 +58,7 @@ export default function Home() {
             href={getCountryUrl("au")}
             className="no-underline"
           >
-            <div className="flex items-center justify-between border border-gray-300 px-2 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <div className="text-black">🇦🇺</div>
