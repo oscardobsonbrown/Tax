@@ -126,33 +126,33 @@ export default function CountryPage() {
               </div>
             </div>
 
-            <div className="mb-8">
-              <div className="mb-4 text-zinc-400">Per Month</div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Per 2 Weeks</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perMonth)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-400">Per Day</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perFortnight)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-400">Per Hour</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perDay)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span></span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perHour)}
-                </span>
-              </div>
-            </div>
+             <div className="mb-8">
+               <div className="mb-4 text-zinc-400">Per Month</div>
+               <div className="mb-1 flex justify-between">
+                 <span className="text-zinc-400">Per 2 Weeks</span>
+                 <span className="text-zinc-400">
+                   {formatCurrency(taxResult.breakdown.perMonth)}
+                 </span>
+               </div>
+               <div className="mb-1 flex justify-between">
+                 <span className="text-zinc-400">Per Day</span>
+                 <span className="text-zinc-400">
+                   {formatCurrency(taxResult.breakdown.perFortnight)}
+                 </span>
+               </div>
+               <div className="mb-1 flex justify-between">
+                 <span className="text-zinc-400">Per Hour</span>
+                 <span className="text-zinc-400">
+                   {formatCurrency(taxResult.breakdown.perDay)}
+                 </span>
+               </div>
+               <div className="flex justify-between">
+                 <span></span>
+                 <span className="text-zinc-400">
+                   {formatCurrency(taxResult.breakdown.perHour)}
+                 </span>
+               </div>
+             </div>
 
             <div className="mb-8 flex justify-between">
               <span className="text-zinc-400">Effective Tax Rate</span>
