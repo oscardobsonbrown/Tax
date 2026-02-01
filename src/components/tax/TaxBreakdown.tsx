@@ -5,6 +5,8 @@ import {
   TaxBreakdown as TaxBreakdownType,
   formatCurrency,
   formatRate,
+  CURRENCY_SYMBOLS,
+  type Currency,
 } from "@/lib/tax-calculations";
 
 const TAX_COLORS = [
@@ -16,17 +18,22 @@ const TAX_COLORS = [
   'bg-cyan-600',
 ];
 
-export default function TaxBreakdown({ 
-  taxes, 
+export default function TaxBreakdown({
+  taxes,
   totalTaxes,
   grossSalary,
-  netPay
-}: { 
+  netPay,
+  currency = "AUD",
+}: {
   taxes: TaxBreakdownType[];
   totalTaxes: number;
   grossSalary: number;
   netPay: number;
+  currency?: Currency;
 }) {
+  const formatCurrencyWithSymbol = (amount: number): string => {
+    return `${CURRENCY_SYMBOLS[currency]}${formatCurrency(amount)}`;
+  };
   const [hoveredBar, setHoveredBar] = useState<{ type: string; amount: number; index: number; x: number; y: number } | null>(null);
   
   const totalBars = 36;
@@ -83,7 +90,7 @@ export default function TaxBreakdown({
                 </span>
               </div>
               <span className="text-zinc-600">
-                -{formatCurrency(tax.amount)}
+                -{formatCurrencyWithSymbol(tax.amount)}
               </span>
             </div>
 
@@ -95,7 +102,7 @@ export default function TaxBreakdown({
                     className="flex justify-between text-[10px] text-zinc-500"
                   >
                     <span>{bracket.name}</span>
-                    <span>-{formatCurrency(bracket.amount)}</span>
+                    <span>-{formatCurrencyWithSymbol(bracket.amount)}</span>
                   </div>
                 ))}
               </div>
@@ -109,12 +116,12 @@ export default function TaxBreakdown({
 
       <div className="flex justify-between mb-6">
         <span className="text-black font-bold">Total Taxes</span>
-        <span className="text-zinc-600">-{formatCurrency(totalTaxes)}</span>
+        <span className="text-zinc-600">-{formatCurrencyWithSymbol(totalTaxes)}</span>
       </div>
 
       <div className="flex flex-col gap-2 mt-4">
         <div className="text-center text-[10px] text-zinc-400 mb-1">
-          Each bar represents {formatCurrency(grossSalary / 36)} of income
+          Each bar represents {formatCurrencyWithSymbol(grossSalary / 36)} of income
         </div>
         
         <div 
@@ -147,14 +154,14 @@ export default function TaxBreakdown({
           ))}
           
           {hoveredBar && (
-            <div 
+            <div
               className="absolute bg-black text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10 pointer-events-none -top-8"
-              style={{ 
+              style={{
                 left: hoveredBar.x,
                 transform: 'translateX(-50%)'
               }}
             >
-              {hoveredBar.type}: {formatCurrency(hoveredBar.amount)}
+              {hoveredBar.type}: {formatCurrencyWithSymbol(hoveredBar.amount)}
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
             </div>
           )}

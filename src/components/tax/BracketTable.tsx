@@ -1,8 +1,24 @@
 "use client";
 
-import { TaxBracket, formatCurrency, formatRate } from "@/lib/tax-calculations";
+import {
+  TaxBracket,
+  formatCurrency,
+  formatRate,
+  CURRENCY_SYMBOLS,
+  type Currency,
+} from "@/lib/tax-calculations";
 
-export default function BracketTable({ brackets }: { brackets: TaxBracket[] }) {
+export default function BracketTable({
+  brackets,
+  currency = "AUD",
+}: {
+  brackets: TaxBracket[];
+  currency?: Currency;
+}) {
+  const formatCurrencyWithSymbol = (amount: number): string => {
+    return `${CURRENCY_SYMBOLS[currency]}${formatCurrency(amount)}`;
+  };
+
   return (
     <div className="flex flex-col w-full">
       {brackets.map((bracket, index) => (
@@ -11,9 +27,9 @@ export default function BracketTable({ brackets }: { brackets: TaxBracket[] }) {
           className="flex shrink-0 justify-between border-b border-zinc-300 px-0 py-[9px]"
         >
           <div className="text-black font-mono text-xs leading-4 w-[80%]">
-            Bracket {index + 1}: {formatCurrency(bracket.min)}
+            Bracket {index + 1}: {formatCurrencyWithSymbol(bracket.min)}
             {" - "}
-            {bracket.max ? formatCurrency(bracket.max) : "∞"}
+            {bracket.max ? formatCurrencyWithSymbol(bracket.max) : "∞"}
           </div>
           <div className="text-black font-mono text-xs leading-4 text-right w-[20%]">
             {formatRate(bracket.rate * 100)}
