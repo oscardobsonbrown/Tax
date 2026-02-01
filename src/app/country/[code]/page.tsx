@@ -74,7 +74,7 @@ export default function CountryPage() {
             onChange={handleWealthChange}
             placeholder={defaultSalary}
           />
-          <div className="border border-zinc-300 px-3 py-3 w-fit cursor-pointer hover:bg-zinc-100 transition-colors">
+          <div className="border border-zinc-300 px-3 py-3 w-full cursor-pointer hover:bg-zinc-100 transition-colors sm:w-fit">
             Advanced Options
           </div>
         </div>

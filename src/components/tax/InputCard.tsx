@@ -20,7 +20,7 @@ export default function InputCard({
       <label className="text-zinc-600 font-mono text-xs leading-4 shrink-0">
         {label}
       </label>
-      <div className="flex h-fit shrink-0 flex-col gap-0 border border-zinc-300 px-3 py-3 w-[512px]">
+      <div className="flex h-fit shrink-0 flex-col gap-0 border border-zinc-300 px-3 py-3 w-full">
         <input
           type="text"
           value={formattedValue}
