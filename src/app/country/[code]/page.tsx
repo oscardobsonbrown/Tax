@@ -46,7 +46,7 @@ export default function CountryPage() {
   const defaultSalary = countryCode === "au" ? "150000" : "1000000";
 
   return (
-    <div className="min-h-screen bg-white font-mono text-[12px] leading-4 text-black">
+    <div className="min-h-screen bg-white px-4 py-8 font-mono text-[12px] leading-4 text-black sm:px-8">
       <div className="mx-auto max-w-[512px] p-0">
         <div className="mb-4 text-zinc-400 cursor-pointer hover:text-black">
           <Link href="/" className="hover:underline">
