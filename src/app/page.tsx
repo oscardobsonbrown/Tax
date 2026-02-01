@@ -30,91 +30,53 @@ export default function Home() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FFFFFF', boxSizing: 'border-box', fontSynthesis: 'none', MozOsxFontSmoothing: 'grayscale', overflow: 'clip', WebkitFontSmoothing: 'antialiased', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', position: 'relative', paddingBlock: '32px' }}>
-      <div style={{ alignItems: 'start', borderBottomColor: '#E5E5E5', borderBottomStyle: 'solid', borderBottomWidth: '1px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 3, height: 'fit-content', paddingBottom: '16px', paddingLeft: 0, paddingRight: 0, paddingTop: 0, width: '512px', flexShrink: 0 }}>
-        <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-          TAX
-        </div>
-        <div style={{ boxSizing: 'border-box', color: '#7D7D7D', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-          Calculate, visualize, and compare global taxes
-        </div>
+    <div className="flex min-h-screen flex-col items-center bg-white p-8 pb-32 font-mono text-sm antialiased">
+      <div className="w-full max-w-[512px] border-b border-gray-200 pb-4">
+        <div className="text-black">TAX</div>
+        <div className="text-zinc-500">Calculate, visualize, and compare global taxes</div>
       </div>
 
-      <div style={{ alignItems: 'start', borderBottomColor: '#E5E5E5', borderBottomStyle: 'solid', borderBottomWidth: '1px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 24, height: 'fit-content', paddingBlock: '48px', paddingInline: 0, width: 'fit-content', marginTop: '52px', flexShrink: 0 }}>
-        <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-          COUNTRIES
-        </div>
-        <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', flexShrink: '0', gap: '8px', height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
+      <div className="mt-12 w-full max-w-[512px] border-b border-gray-200 py-12">
+        <div className="mb-6 text-black">COUNTRIES</div>
+        <div className="flex flex-col gap-2">
           <Link
             href={getCountryUrl("no")}
-            style={{ textDecoration: 'none' }}
+            className="no-underline"
           >
-            <div
-              style={{ alignItems: 'center', borderColor: '#CCCCCC', borderStyle: 'solid', borderWidth: '1px', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 371, height: 'fit-content', paddingBlock: '16px', paddingInline: '15px', width: 'fit-content', transition: 'border-color 0.15s ease' }}
-              onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#999999'}
-              onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#CCCCCC'}
-            >
-              <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', flexShrink: '0', gap: 4, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
-                <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 7, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
-                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                    🇳🇴
-                  </div>
-                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                    Norway
-                  </div>
+            <div className="flex items-center justify-between border border-gray-300 px-4 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇳🇴</div>
+                  <div className="text-black">Norway</div>
                 </div>
-                <div style={{ boxSizing: 'border-box', color: '#7F7F7F', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                  2026 Tax Year
-                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
               </div>
-              <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                {'->'}
-              </div>
+              <div className="text-black">{'->'}</div>
             </div>
           </Link>
           <Link
             href={getCountryUrl("au")}
-            style={{ textDecoration: 'none' }}
+            className="no-underline"
           >
-            <div
-              style={{ alignItems: 'center', borderColor: '#CCCCCC', borderStyle: 'solid', borderWidth: '1px', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 371, height: 'fit-content', paddingBlock: '16px', paddingInline: '15px', width: 'fit-content', transition: 'border-color 0.15s ease' }}
-              onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#999999'}
-              onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#CCCCCC'}
-            >
-              <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', flexShrink: '0', gap: 4, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
-                <div style={{ alignItems: 'start', boxSizing: 'border-box', display: 'flex', flexShrink: '0', gap: 7, height: 'fit-content', paddingBlock: 0, paddingInline: 0, width: 'fit-content' }}>
-                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                    🇦🇺
-                  </div>
-                  <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                    Australia
-                  </div>
+            <div className="flex items-center justify-between border border-gray-300 px-4 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇦🇺</div>
+                  <div className="text-black">Australia</div>
                 </div>
-                <div style={{ boxSizing: 'border-box', color: '#7F7F7F', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                  2026 Tax Year
-                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
               </div>
-              <div style={{ boxSizing: 'border-box', color: '#000000', flexShrink: '0', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', height: 'fit-content', lineHeight: '16px', width: 'fit-content' }}>
-                {'->'}
-              </div>
+              <div className="text-black">{'->'}</div>
             </div>
           </Link>
         </div>
       </div>
 
-      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 11 }}>
-        <div style={{ boxSizing: 'border-box', height: '25px', width: '25px' }}>
-          <div style={{ backgroundColor: '#DDDDDD', borderRadius: '7px', boxSizing: 'border-box', height: '25px', position: 'relative', top: 0, left: 0, width: '25px' }} />
-        </div>
-        <div style={{ boxSizing: 'border-box', color: '#7F7F7F', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', lineHeight: '16px', textAlign: 'center' }}>
-          Tax calculators and visualizations for informational purposes only
-        </div>
-        <div style={{ boxSizing: 'border-box', color: '#7F7F7F', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', lineHeight: '16px', textAlign: 'center' }}>
-          ©2026
-        </div>
-        <div style={{ boxSizing: 'border-box', color: '#7F7F7F', fontFamily: '"Geist Mono", system-ui, sans-serif', fontSize: '12px', lineHeight: '16px', textAlign: 'center' }}>
-          - Oscar
-        </div>
+      <div className="mt-auto flex flex-col items-center gap-3 text-center">
+        <div className="h-[25px] w-[25px] rounded-[7px] bg-gray-300" />
+        <div className="text-zinc-500">Tax calculators and visualizations for informational purposes only</div>
+        <div className="text-zinc-500">©2026</div>
+        <div className="text-zinc-500">- Oscar</div>
       </div>
     </div>
   );
