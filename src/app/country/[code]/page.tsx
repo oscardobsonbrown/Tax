@@ -54,7 +54,7 @@ export default function CountryPage() {
           </Link>
         </div>
 
-        <div className="mb-2 flex flex-col gap-1">
+        <div className="mb-8 flex flex-col gap-1">
           <div className="text-black">
             EMPLOYMENT TAX CALCULATOR - {taxData.emoji} {taxData.name}
           </div>
@@ -86,7 +86,7 @@ export default function CountryPage() {
 
           {taxResult.deductions.standard > 0 && (
             <div className="mb-4">
-              <div className="mb-2 text-center text-black">DEDUCTIONS</div>
+              <div className="mb-4 text-center text-black">DEDUCTIONS</div>
               <div className="mb-1 flex justify-between text-zinc-600">
                 <span>- Standard Deduction</span>
                 <span>-{formatCurrency(taxResult.deductions.standard)}</span>
@@ -107,13 +107,13 @@ export default function CountryPage() {
           )}
 
           <div className="mb-4">
-            <div className="mb-2 text-center text-black">TAX BREAKDOWN</div>
+            <div className="mb-4 text-center text-black">TAX BREAKDOWN</div>
             <TaxBreakdown taxes={taxResult.taxes} />
           </div>
 
           <div className="flex flex-col">
-            <div className="mb-8">
-               <div className="mb-2 text-black font-bold text-xs">
+             <div className="mb-8">
+               <div className="mb-4 text-black font-bold text-xs">
                 NET ANNUAL PAY
                </div>
                <div className="mb-1 flex justify-between">
@@ -127,7 +127,7 @@ export default function CountryPage() {
             </div>
 
             <div className="mb-8">
-              <div className="mb-2 text-zinc-400">Per Month</div>
+              <div className="mb-4 text-zinc-400">Per Month</div>
               <div className="mb-1 flex justify-between">
                 <span className="text-zinc-400">Per 2 Weeks</span>
                 <span className="text-zinc-400">
@@ -181,7 +181,7 @@ export default function CountryPage() {
           </div>
         </div>
 
-        <div className="mb-6 border border-zinc-300 p-3">
+        <div className="mb-8 border border-zinc-300 p-3">
           <div className="mb-4 text-zinc-600">DID YOU KNOW?</div>
           <div className="mb-4 border-b border-zinc-200 pb-2 pt-3">
             <div className="flex justify-between">
@@ -210,12 +210,12 @@ export default function CountryPage() {
           </div>
         </div>
 
-        <div className="mb-6">
-          <div className="mb-2 text-zinc-600">PROGRESSIVE TAX BRACKETS</div>
+        <div className="mb-8">
+          <div className="mb-4 text-zinc-600">PROGRESSIVE TAX BRACKETS</div>
           <BracketTable brackets={taxData.brackets} />
         </div>
 
-        <div className="mb-6 border border-zinc-300 p-3">
+        <div className="mb-8 border border-zinc-300 p-3">
           <div className="mb-2 text-black text-xs">
             THE {taxData.name.toUpperCase()} TAX SYSTEM
           </div>
