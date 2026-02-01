@@ -43,7 +43,7 @@ export default function Home() {
             href={getCountryUrl("no")}
             className="no-underline"
           >
-            <div className="flex items-center justify-between border border-gray-300 px-4 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
+            <div className="flex items-center justify-between border border-gray-300 px-2 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <div className="text-black">🇳🇴</div>
@@ -58,7 +58,7 @@ export default function Home() {
             href={getCountryUrl("au")}
             className="no-underline"
           >
-            <div className="flex items-center justify-between border border-gray-300 px-4 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
+            <div className="flex items-center justify-between border border-gray-300 px-2 py-4 transition-colors hover:border-gray-600 sm:gap-96 sm:px-[15px] sm:gap-[371px]">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <div className="text-black">🇦🇺</div>
