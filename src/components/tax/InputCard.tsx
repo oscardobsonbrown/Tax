@@ -26,7 +26,7 @@ export default function InputCard({
           value={formattedValue}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="text-black font-mono text-xs leading-16 w-full bg-transparent outline-none"
+          className="text-black font-mono text-xs leading-2 w-full bg-transparent outline-none"
         />
       </div>
     </div>
