@@ -111,76 +111,73 @@ export default function CountryPage() {
             <TaxBreakdown taxes={taxResult.taxes} />
           </div>
 
-          <div className="flex flex-col">
+           <div className="flex flex-col gap-8">
              <div className="mb-8">
-               <div className="mb-4 text-black font-bold text-xs">
-                NET ANNUAL PAY
+                <div className="mb-4 text-black font-bold text-xs">
+                 NET ANNUAL PAY
+                </div>
+                <div className="mb-1 flex justify-between">
+                 <span className="text-black font-bold">
+                   {formatCurrency(taxResult.netPay)}
+                 </span>
+                 <span className="text-black">
+                   -{formatCurrency(taxResult.totalTaxes)}
+                 </span>
                </div>
-               <div className="mb-1 flex justify-between">
-                <span className="text-black font-bold">
-                  {formatCurrency(taxResult.netPay)}
-                </span>
-                <span className="text-black">
-                  -{formatCurrency(taxResult.totalTaxes)}
-                </span>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <div className="mb-2 text-zinc-400">Per Month</div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Per 2 Weeks</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perMonth)}
-                </span>
-              </div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Per Day</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perFortnight)}
-                </span>
-              </div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Per Hour</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perDay)}
-                </span>
-              </div>
-              <div className="mb-1 flex justify-between">
-                <span></span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.breakdown.perHour)}
-                </span>
-              </div>
              </div>
 
-            <div className="mb-8">
-              <div className="mb-2 text-zinc-400">Tax Rates</div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Effective Tax Rate</span>
-                <span className="flex h-fit items-center justify-center gap-0 rounded-full outline outline-1 outline-zinc-400 px-0.5 py-0">
-                  <span className="text-[6px] leading-2 text-zinc-400">?</span>
-                </span>
-              </div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Marginal Tax Rate</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.effectiveTaxRate)}
-                </span>
-              </div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Working Days for Taxes</span>
-                <span className="text-zinc-400">
-                  {formatCurrency(taxResult.marginalTaxRate)}
-                </span>
-              </div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-zinc-400">Working Days for Taxes</span>
-                <span className="flex h-fit items-center justify-center gap-0 rounded-full outline outline-1 outline-zinc-400 px-0.5 py-0">
-                  <span className="text-[6px] leading-2 text-zinc-400">?</span>
-                </span>
-              </div>
-            </div>
+             <div className="mb-8">
+               <div className="mb-2 text-zinc-400">Per Month</div>
+               <div className="flex flex-col gap-1">
+                 <div className="flex justify-between">
+                   <span className="text-zinc-400">Per 2 Weeks</span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.breakdown.perMonth)}
+                   </span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span className="text-zinc-400">Per Day</span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.breakdown.perFortnight)}
+                   </span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span className="text-zinc-400">Per Hour</span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.breakdown.perDay)}
+                   </span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span></span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.breakdown.perHour)}
+                   </span>
+                 </div>
+               </div>
+             </div>
+
+             <div className="mb-8">
+               <div className="flex flex-col gap-1">
+                 <div className="flex justify-between">
+                   <span className="text-zinc-400">Effective Tax Rate</span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.effectiveTaxRate)}
+                   </span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span className="text-zinc-400">Marginal Tax Rate</span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.marginalTaxRate)}
+                   </span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span className="text-zinc-400">Working Days for Taxes</span>
+                   <span className="text-zinc-400">
+                     {formatCurrency(taxResult.workingDaysForTaxes)}
+                   </span>
+                 </div>
+               </div>
+             </div>
           </div>
         </div>
 
