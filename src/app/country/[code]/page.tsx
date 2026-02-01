@@ -3,8 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { formatCurrency, getTaxData } from "@/lib/tax-calculations";
-import InputCard from "@/components/tax/InputCard";
+import {
+  formatCurrency,
+  getTaxData,
+  convertCurrency,
+  type Currency,
+  CURRENCY_SYMBOLS,
+  EXCHANGE_RATES,
+} from "@/lib/tax-calculations";
 import TaxBreakdown from "@/components/tax/TaxBreakdown";
 import BracketTable from "@/components/tax/BracketTable";
 
@@ -14,43 +20,44 @@ export default function CountryPage() {
   const countryCode = pathname.split("/").pop() || "no";
 
   const urlSalary = searchParams.get("salary") || "1000000";
-  const urlWealth = searchParams.get("wealth") || "1000000";
+  const urlWealth = searchParams.get("wealth") || "";
+  const urlCurrency = (searchParams.get("currency") as Currency) || "AUD";
 
-  const [salary, setSalary] = useState(urlSalary);
-  const [wealth, setWealth] = useState(urlWealth);
+  const salary = urlSalary;
+  const wealth = urlWealth;
+  const currency = urlCurrency;
   const [glossaryOpen, setGlossaryOpen] = useState(false);
 
-  const salaryNum = parseInt(salary.replace(/\s/g, "")) || 0;
-
   const taxData = getTaxData(countryCode);
-  const taxResult = taxData.calculate(salaryNum);
+  const localCurrency = taxData.currency;
 
-  const updateUrl = (newSalary: string, newWealth: string) => {
-    const url = new URL(window.location.href);
-    if (newSalary) url.searchParams.set("salary", newSalary.replace(/\s/g, ""));
-    else url.searchParams.delete("salary");
-    if (newWealth) url.searchParams.set("wealth", newWealth.replace(/\s/g, ""));
-    else url.searchParams.delete("wealth");
-    window.history.replaceState({}, "", url.toString());
+  const salaryNum = parseInt(salary.replace(/\s/g, "")) || 0;
+  const convertedSalaryNum = convertCurrency(salaryNum, currency, localCurrency);
+
+  const taxResult = taxData.calculate(convertedSalaryNum);
+
+  const conversionRate =
+    EXCHANGE_RATES[localCurrency] / EXCHANGE_RATES[currency];
+
+  const formatCurrencyWithSymbol = (
+    amount: number,
+    currencyCode: Currency,
+  ): string => {
+    return `${CURRENCY_SYMBOLS[currencyCode]}${formatCurrency(amount)}`;
   };
-
-  const handleSalaryChange = (value: string) => {
-    setSalary(value);
-    updateUrl(value, wealth);
-  };
-
-  const handleWealthChange = (value: string) => {
-    setWealth(value);
-    updateUrl(salary, value);
-  };
-
-  const defaultSalary = countryCode === "au" ? "150000" : "1000000";
 
   return (
     <div className="min-h-screen bg-white px-4 py-8 font-mono text-[12px] leading-4 text-black sm:px-8">
       <div className="mx-auto max-w-[512px] p-0">
         <div className="mb-4 text-zinc-400 cursor-pointer hover:text-black">
-          <Link href="/" className="hover:underline">
+          <Link
+            href={`/?${new URLSearchParams({
+              ...(salary && { salary: salary.replace(/\s/g, "") }),
+              ...(wealth && { wealth: wealth.replace(/\s/g, "") }),
+              currency,
+            }).toString()}`}
+            className="hover:underline"
+          >
             &lt;- Back to countries
           </Link>
         </div>
@@ -62,21 +69,29 @@ export default function CountryPage() {
           <div className="text-zinc-400">2026 Tax Year</div>
         </div>
 
-        <div className="mb-8 flex flex-col gap-6">
-          <InputCard
-            label="GROSS ANNUAL SALARY"
-            value={salary}
-            onChange={handleSalaryChange}
-            placeholder={defaultSalary}
-          />
-          <InputCard
-            label="NET WEALTH"
-            value={wealth}
-            onChange={handleWealthChange}
-            placeholder={defaultSalary}
-          />
-          <div className="border border-zinc-300 px-3 py-3 w-full cursor-pointer hover:bg-zinc-100 transition-colors sm:w-fit">
-            Advanced Options
+        <div className="mb-8 border border-zinc-300 p-3">
+          <div className="mb-4 text-center text-black font-bold text-sm">
+            YOUR INPUTS
+          </div>
+          <div className="flex flex-col gap-2 text-xs">
+            <div className="flex justify-between text-zinc-500">
+              <span>Gross income ({currency})</span>
+              <span className="text-black">
+                {CURRENCY_SYMBOLS[currency]}{formatCurrency(salaryNum)}
+              </span>
+            </div>
+            <div className="flex justify-between text-zinc-500">
+              <span>Converted to local ({localCurrency})</span>
+              <span className="text-black">
+                {CURRENCY_SYMBOLS[localCurrency]}{formatCurrency(convertedSalaryNum)}
+              </span>
+            </div>
+            <div className="flex justify-between text-zinc-500">
+              <span>Exchange rate</span>
+              <span className="text-black">
+                1 {currency} = {conversionRate.toFixed(4)} {localCurrency}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -91,7 +106,7 @@ export default function CountryPage() {
           <div className="flex flex-col">
             <div className="mb-1 flex justify-between text-black">
               <span>GROSS ANNUAL SALARY</span>
-              <span>{formatCurrency(taxResult.grossSalary)}</span>
+              <span>{formatCurrencyWithSymbol(taxResult.grossSalary, localCurrency)}</span>
             </div>
 
             <div className="border-t border-zinc-200 my-4"></div>
@@ -102,13 +117,13 @@ export default function CountryPage() {
                 {taxResult.deductions.standard > 0 && (
                   <div className="flex justify-between text-zinc-600 text-xs mb-1">
                     <span>- Standard Deduction</span>
-                    <span>-{formatCurrency(taxResult.deductions.standard)}</span>
+                    <span>-{formatCurrencyWithSymbol(taxResult.deductions.standard, localCurrency)}</span>
                   </div>
                 )}
                 {taxResult.deductions.personalAllowance > 0 && (
                   <div className="flex justify-between text-zinc-600 text-xs">
                     <span>- Personal Allowance</span>
-                    <span>-{formatCurrency(taxResult.deductions.personalAllowance)}</span>
+                    <span>-{formatCurrencyWithSymbol(taxResult.deductions.personalAllowance, localCurrency)}</span>
                   </div>
                 )}
               </div>
@@ -116,39 +131,39 @@ export default function CountryPage() {
 
             <div className="flex justify-between text-black font-bold mb-6">
               <span>Taxable Income</span>
-              <span>{formatCurrency(taxResult.taxableIncome)}</span>
+              <span>{formatCurrencyWithSymbol(taxResult.taxableIncome, localCurrency)}</span>
             </div>
 
             <div className="border-t border-zinc-200 mb-4"></div>
 
             <div className="mb-4">
               <div className="mb-4 text-zinc-400 text-xs">TAX BREAKDOWN</div>
-              <TaxBreakdown taxes={taxResult.taxes} totalTaxes={taxResult.totalTaxes} grossSalary={taxResult.grossSalary} netPay={taxResult.netPay} />
+              <TaxBreakdown taxes={taxResult.taxes} totalTaxes={taxResult.totalTaxes} grossSalary={taxResult.grossSalary} netPay={taxResult.netPay} currency={localCurrency} />
             </div>
 
             <div className="border-t border-zinc-200 my-4"></div>
 
             <div className="mb-1 flex justify-between text-black font-bold text-sm">
               <span>NET ANNUAL PAY</span>
-              <span>{formatCurrency(taxResult.netPay)}</span>
+              <span>{formatCurrencyWithSymbol(taxResult.netPay, localCurrency)}</span>
             </div>
 
             <div className="mt-4 space-y-1 text-xs">
               <div className="flex justify-between text-zinc-500">
                 <span>Per Month</span>
-                <span>{formatCurrency(taxResult.breakdown.perMonth)}</span>
+                <span>{formatCurrencyWithSymbol(taxResult.breakdown.perMonth, localCurrency)}</span>
               </div>
               <div className="flex justify-between text-zinc-500">
                 <span>Per 2 Weeks</span>
-                <span>{formatCurrency(taxResult.breakdown.perFortnight)}</span>
+                <span>{formatCurrencyWithSymbol(taxResult.breakdown.perFortnight, localCurrency)}</span>
               </div>
               <div className="flex justify-between text-zinc-500">
                 <span>Per Day</span>
-                <span>{formatCurrency(taxResult.breakdown.perDay)}</span>
+                <span>{formatCurrencyWithSymbol(taxResult.breakdown.perDay, localCurrency)}</span>
               </div>
               <div className="flex justify-between text-zinc-500">
                 <span>Per Hour</span>
-                <span>{formatCurrency(taxResult.breakdown.perHour)}</span>
+                <span>{formatCurrencyWithSymbol(taxResult.breakdown.perHour, localCurrency)}</span>
               </div>
             </div>
 
@@ -175,7 +190,7 @@ export default function CountryPage() {
             <div className="flex justify-between">
               <span className="text-black">Your Salary</span>
               <span className="text-zinc-600">
-                {formatCurrency(taxResult.grossSalary)}
+                {formatCurrencyWithSymbol(taxResult.grossSalary, localCurrency)}
               </span>
             </div>
             <div className="flex justify-between">
@@ -183,14 +198,14 @@ export default function CountryPage() {
                 + Employer Tax ({taxData.location} {taxData.employerRate})
               </span>
               <span className="text-zinc-600">
-                {formatCurrency(taxResult.employerTax)}
+                {formatCurrencyWithSymbol(taxResult.employerTax, localCurrency)}
               </span>
             </div>
           </div>
           <div className="flex justify-between py-2">
             <span className="text-black">Total Employment Cost</span>
             <span className="text-zinc-600">
-              {formatCurrency(taxResult.totalEmploymentCost)}
+              {formatCurrencyWithSymbol(taxResult.totalEmploymentCost, localCurrency)}
             </span>
           </div>
           <div className="mt-4 text-zinc-700 whitespace-pre-line text-xs leading-[18px]">
@@ -200,7 +215,7 @@ export default function CountryPage() {
 
         <div className="mb-8">
           <div className="mb-4 text-zinc-600">PROGRESSIVE TAX BRACKETS</div>
-          <BracketTable brackets={taxData.brackets} />
+          <BracketTable brackets={taxData.brackets} currency={localCurrency} />
         </div>
 
         <div className="mb-8 border border-zinc-300">
