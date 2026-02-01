@@ -68,7 +68,7 @@ function HomeContent() {
             <span className="text-black">YOUR DETAILS</span>
             {!detailsOpen && (salary || wealth) && (
               <span className="text-zinc-500 text-xs">
-                {currency} {salary || "0"} {wealth && `/ ${wealth}`}
+                {salary || "0"} ({currency}) {wealth && `/ ${wealth} (${currency})`}
               </span>
             )}
           </div>
