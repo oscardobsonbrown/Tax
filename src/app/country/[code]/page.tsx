@@ -126,57 +126,68 @@ export default function CountryPage() {
               </div>
             </div>
 
-             <div className="mb-8">
-               <div className="mb-4 text-zinc-400">Per Month</div>
-               <div className="mb-1 flex justify-between">
-                 <span className="text-zinc-400">Per 2 Weeks</span>
-                 <span className="text-zinc-400">
-                   {formatCurrency(taxResult.breakdown.perMonth)}
-                 </span>
-               </div>
-               <div className="mb-1 flex justify-between">
-                 <span className="text-zinc-400">Per Day</span>
-                 <span className="text-zinc-400">
-                   {formatCurrency(taxResult.breakdown.perFortnight)}
-                 </span>
-               </div>
-               <div className="mb-1 flex justify-between">
-                 <span className="text-zinc-400">Per Hour</span>
-                 <span className="text-zinc-400">
-                   {formatCurrency(taxResult.breakdown.perDay)}
-                 </span>
-               </div>
-               <div className="flex justify-between">
-                 <span></span>
-                 <span className="text-zinc-400">
-                   {formatCurrency(taxResult.breakdown.perHour)}
-                 </span>
-               </div>
-             </div>
+            <div className="mb-8">
+              <div className="mb-2 text-zinc-400">Per Month</div>
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Per 2 Weeks</span>
+                <span className="text-zinc-400">
+                  {formatCurrency(taxResult.breakdown.perMonth)}
+                </span>
+              </div>
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Per Day</span>
+                <span className="text-zinc-400">
+                  {formatCurrency(taxResult.breakdown.perFortnight)}
+                </span>
+              </div>
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Per Hour</span>
+                <span className="text-zinc-400">
+                  {formatCurrency(taxResult.breakdown.perDay)}
+                </span>
+              </div>
+              <div className="mb-1 flex justify-between">
+                <span></span>
+                <span className="text-zinc-400">
+                  {formatCurrency(taxResult.breakdown.perHour)}
+                </span>
+              </div>
+            </div>
 
-            <div className="mb-8 flex justify-between">
-              <span className="text-zinc-400">Effective Tax Rate</span>
-              <span className="flex h-fit items-center justify-center gap-0 rounded-full outline outline-1 outline-zinc-400 px-0.5 py-0">
-                <span className="text-[6px] leading-2 text-zinc-400">?</span>
-              </span>
+            <div className="mb-8">
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Effective Tax Rate</span>
+                <span className="flex h-fit items-center justify-center gap-0 rounded-full outline outline-1 outline-zinc-400 px-0.5 py-0">
+                  <span className="text-[6px] leading-2 text-zinc-400">?</span>
+                </span>
+              </div>
             </div>
-            <div className="mb-8 flex justify-between">
-              <span className="text-zinc-400">Marginal Tax Rate</span>
-              <span className="text-zinc-400">
-                {formatCurrency(taxResult.effectiveTaxRate)}
-              </span>
+
+            <div className="mb-8">
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Marginal Tax Rate</span>
+                <span className="text-zinc-400">
+                  {formatCurrency(taxResult.effectiveTaxRate)}
+                </span>
+              </div>
             </div>
-            <div className="mb-8 flex justify-between">
-              <span className="text-zinc-400">Working Days for Taxes</span>
-              <span className="text-zinc-400">
-                {formatCurrency(taxResult.marginalTaxRate)}
-              </span>
+
+            <div className="mb-8">
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Working Days for Taxes</span>
+                <span className="text-zinc-400">
+                  {formatCurrency(taxResult.marginalTaxRate)}
+                </span>
+              </div>
             </div>
-            <div className="mb-8 flex justify-between">
-              <span className="text-zinc-400">Working Days for Taxes</span>
-              <span className="flex h-fit items-center justify-center gap-0 rounded-full outline outline-1 outline-zinc-400 px-0.5 py-0">
-                <span className="text-[6px] leading-2 text-zinc-400">?</span>
-              </span>
+
+            <div className="mb-8">
+              <div className="mb-1 flex justify-between">
+                <span className="text-zinc-400">Working Days for Taxes</span>
+                <span className="flex h-fit items-center justify-center gap-0 rounded-full outline outline-1 outline-zinc-400 px-0.5 py-0">
+                  <span className="text-[6px] leading-2 text-zinc-400">?</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
