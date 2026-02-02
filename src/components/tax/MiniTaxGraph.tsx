@@ -73,11 +73,14 @@ export default function MiniTaxGraph({
   }
 
   return (
-    <div className="flex items-center gap-[2px]">
+    <div 
+      className="flex items-center gap-[2px]"
+      title={`${result.effectiveTaxRate.toFixed(1)}% effective tax rate`}
+    >
       {bars.map((bar, idx) => (
         <div
           key={`mini-bar-${countryCode}-${idx}`}
-          className={`w-[2px] h-4 ${bar.color}`}
+          className={`w-[4px] h-4 ${bar.color}`}
         />
       ))}
     </div>
