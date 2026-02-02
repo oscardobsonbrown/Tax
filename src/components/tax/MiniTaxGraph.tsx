@@ -31,8 +31,8 @@ export default function MiniTaxGraph({
   // Calculate taxes
   const result = taxData.calculate(convertedSalary);
 
-  // Simple visualization: 20 bars representing income distribution
-  const totalBars = 20;
+  // 10 bars, each 2px wide with 2px gap
+  const totalBars = 10;
 
   const getBarCount = (amount: number) => {
     if (result.grossSalary <= 0) return 0;
@@ -56,28 +56,21 @@ export default function MiniTaxGraph({
   });
 
   for (let i = 0; i < netPayBarCount; i++) {
-    bars.push({ color: "bg-zinc-200" });
+    bars.push({ color: "bg-zinc-300" });
   }
 
   for (let i = 0; i < remainingBars; i++) {
     bars.push({ color: "bg-zinc-100" });
   }
 
-  const effectiveRate = result.effectiveTaxRate.toFixed(0);
-
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex gap-[1px] h-2">
-        {bars.map((bar, idx) => (
-          <div
-            key={`mini-bar-${countryCode}-${idx}`}
-            className={`flex-1 ${bar.color}`}
-          />
-        ))}
-      </div>
-      <div className="text-[10px] text-zinc-500 text-right">
-        {effectiveRate}% effective rate
-      </div>
+    <div className="flex items-center gap-[2px]">
+      {bars.map((bar, idx) => (
+        <div
+          key={`mini-bar-${countryCode}-${idx}`}
+          className={`w-[2px] h-4 ${bar.color}`}
+        />
+      ))}
     </div>
   );
 }

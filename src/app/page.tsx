@@ -65,28 +65,28 @@ function HomeContent() {
         href={getCountryUrl(countryCode)}
         className="no-underline"
       >
-        <div className="flex flex-col border border-gray-300 px-[15px] py-3 transition-colors hover:border-gray-600">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="text-black">
-                {countryCode === "no" && "🇳🇴"}
-                {countryCode === "au" && "🇦🇺"}
-                {countryCode === "fr" && "🇫🇷"}
-                {countryCode === "es" && "🇪🇸"}
-                {countryCode === "gr" && "🇬🇷"}
-                {countryCode === "at" && "🇦🇹"}
-                {countryCode === "ch" && "🇨🇭"}
-                {countryCode === "mx" && "🇲🇽"}
-                {countryCode === "pt" && "🇵🇹"}
-                {countryCode === "jp" && "🇯🇵"}
-                {countryCode === "ee" && "🇪🇪"}
-              </div>
-              <div className="text-black">{countryName}</div>
-              <div className="text-zinc-500 text-xs">({year})</div>
+        <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+          <div className="flex items-center gap-2">
+            <div className="text-black">
+              {countryCode === "no" && "🇳🇴"}
+              {countryCode === "au" && "🇦🇺"}
+              {countryCode === "fr" && "🇫🇷"}
+              {countryCode === "es" && "🇪🇸"}
+              {countryCode === "gr" && "🇬🇷"}
+              {countryCode === "at" && "🇦🇹"}
+              {countryCode === "ch" && "🇨🇭"}
+              {countryCode === "mx" && "🇲🇽"}
+              {countryCode === "pt" && "🇵🇹"}
+              {countryCode === "jp" && "🇯🇵"}
+              {countryCode === "ee" && "🇪🇪"}
             </div>
+            <div className="text-black">{countryName}</div>
+            <div className="text-zinc-500 text-xs">({year})</div>
+          </div>
+          <div className="flex items-center gap-4">
+            <MiniTaxGraph countryCode={countryCode} currency={currency} />
             <div className="text-black">{'->'}</div>
           </div>
-          <MiniTaxGraph countryCode={countryCode} currency={currency} />
         </div>
       </Link>
     );
