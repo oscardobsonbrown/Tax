@@ -150,6 +150,141 @@ function HomeContent() {
               <div className="text-black">{'->'}</div>
             </div>
           </Link>
+          <Link
+            href={getCountryUrl("fr")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇫🇷</div>
+                  <div className="text-black">France</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("es")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇪🇸</div>
+                  <div className="text-black">Spain</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("gr")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇬🇷</div>
+                  <div className="text-black">Greece</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("at")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇦🇹</div>
+                  <div className="text-black">Austria</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("ch")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇨🇭</div>
+                  <div className="text-black">Switzerland</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year (Zürich)</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("mx")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇲🇽</div>
+                  <div className="text-black">Mexico</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("pt")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇵🇹</div>
+                  <div className="text-black">Portugal</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("jp")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇯🇵</div>
+                  <div className="text-black">Japan</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
+          <Link
+            href={getCountryUrl("ee")}
+            className="no-underline"
+          >
+            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-black">🇪🇪</div>
+                  <div className="text-black">Estonia</div>
+                </div>
+                <div className="text-zinc-500">2026 Tax Year</div>
+              </div>
+              <div className="text-black">{'->'}</div>
+            </div>
+          </Link>
         </div>
       </div>
 
