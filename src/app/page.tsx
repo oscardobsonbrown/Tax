@@ -8,11 +8,20 @@ import MiniTaxGraph from "@/components/tax/MiniTaxGraph";
 
 const DEFAULT_SALARY = "100000";
 
+// Format number with spaces as thousands separator
+function formatNumberWithSpaces(value: string): string {
+  const num = parseInt(value.replace(/\s/g, ""), 10);
+  if (isNaN(num)) return value;
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 function HomeContent() {
   const searchParams = useSearchParams();
 
   const [salary, setSalary] = useState(searchParams.get("salary") || DEFAULT_SALARY);
+  const [displaySalary, setDisplaySalary] = useState(() => formatNumberWithSpaces(searchParams.get("salary") || DEFAULT_SALARY));
   const [wealth, setWealth] = useState(searchParams.get("wealth") || "");
+  const [displayWealth, setDisplayWealth] = useState(() => formatNumberWithSpaces(searchParams.get("wealth") || ""));
   const [currency, setCurrency] = useState<Currency>((searchParams.get("currency") as Currency) || "AUD");
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -28,14 +37,18 @@ function HomeContent() {
 
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSalary(value);
-    updateUrl(value, wealth, currency);
+    const rawValue = value.replace(/\s/g, "");
+    setSalary(rawValue);
+    setDisplaySalary(formatNumberWithSpaces(rawValue));
+    updateUrl(rawValue, wealth, currency);
   };
 
   const handleWealthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setWealth(value);
-    updateUrl(salary, value, currency);
+    const rawValue = value.replace(/\s/g, "");
+    setWealth(rawValue);
+    setDisplayWealth(formatNumberWithSpaces(rawValue));
+    updateUrl(salary, rawValue, currency);
   };
 
   const handleCurrencyChange = (newCurrency: Currency) => {
@@ -58,6 +71,7 @@ function HomeContent() {
   useEffect(() => {
     if (!searchParams.get("salary")) {
       updateUrl(DEFAULT_SALARY, wealth, currency);
+      setDisplaySalary(formatNumberWithSpaces(DEFAULT_SALARY));
     }
   }, []);
 
@@ -119,7 +133,7 @@ function HomeContent() {
             <span className="text-black">YOUR DETAILS</span>
             {!detailsOpen && (salary || wealth) && (
               <span className="text-zinc-500 text-xs">
-                {salary || "0"} ({currency}) {wealth && `/ ${wealth} (${currency})`}
+                {formatNumberWithSpaces(salary) || "0"} ({currency}) {wealth && `/ ${formatNumberWithSpaces(wealth)} (${currency})`}
               </span>
             )}
           </div>
@@ -147,7 +161,7 @@ function HomeContent() {
                 <div className="text-zinc-500 text-xs">Gross income</div>
                 <input
                   type="text"
-                  value={salary}
+                  value={displaySalary}
                   onChange={handleSalaryChange}
                   placeholder="0"
                   className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
@@ -157,7 +171,7 @@ function HomeContent() {
                 <div className="text-zinc-500 text-xs">Net wealth</div>
                 <input
                   type="text"
-                  value={wealth}
+                  value={displayWealth}
                   onChange={handleWealthChange}
                   placeholder="0"
                   className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
