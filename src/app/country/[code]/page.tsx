@@ -19,7 +19,7 @@ export default function CountryPage() {
   const pathname = usePathname();
   const countryCode = pathname.split("/").pop() || "no";
 
-  const urlSalary = searchParams.get("salary") || "1000000";
+  const urlSalary = searchParams.get("salary") || "100000";
   const urlWealth = searchParams.get("wealth") || "";
   const urlCurrency = (searchParams.get("currency") as Currency) || "AUD";
 
