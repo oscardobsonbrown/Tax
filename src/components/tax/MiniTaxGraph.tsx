@@ -31,35 +31,44 @@ export default function MiniTaxGraph({
   // Calculate taxes
   const result = taxData.calculate(convertedSalary);
 
-  // 10 bars, each 2px wide with 2px gap
+  // 10 bars total representing 100% of income (each bar = 10%)
   const totalBars = 10;
 
-  const getBarCount = (amount: number) => {
-    if (result.grossSalary <= 0) return 0;
-    return Math.max(0, Math.round((amount / result.grossSalary) * totalBars));
-  };
+  // Calculate how many bars should be tax bars based on effective rate
+  const exactTaxBars = (result.effectiveTaxRate / 100) * totalBars;
+  const totalTaxBars = Math.max(1, Math.round(exactTaxBars)); // At least 1 bar if any tax
 
-  const taxBarCounts = result.taxes.map((tax) => getBarCount(tax.amount));
-  const netPayBarCount = getBarCount(result.netPay);
-  const usedBars = taxBarCounts.reduce((sum, count) => sum + count, 0) + netPayBarCount;
-  const remainingBars = totalBars - usedBars;
-
-  // Build bars array
+  // Calculate bars for each tax type proportionally
+  const totalTaxAmount = result.totalTaxes;
   const bars: { color: string }[] = [];
+  let barsAssigned = 0;
 
-  result.taxes.forEach((_, idx) => {
-    const count = taxBarCounts[idx];
+  result.taxes.forEach((tax, idx) => {
+    const isLastTax = idx === result.taxes.length - 1;
+    let count: number;
+
+    if (totalTaxAmount <= 0) {
+      count = 0;
+    } else if (isLastTax) {
+      // Last tax gets remaining bars
+      count = totalTaxBars - barsAssigned;
+    } else {
+      // Proportional allocation
+      const proportion = tax.amount / totalTaxAmount;
+      count = Math.round(proportion * totalTaxBars);
+    }
+
+    count = Math.max(0, Math.min(count, totalTaxBars - barsAssigned));
+    barsAssigned += count;
+
     const color = TAX_COLORS[idx % TAX_COLORS.length];
     for (let i = 0; i < count; i++) {
       bars.push({ color });
     }
   });
 
-  for (let i = 0; i < netPayBarCount; i++) {
-    bars.push({ color: "bg-zinc-300" });
-  }
-
-  for (let i = 0; i < remainingBars; i++) {
+  // Fill remaining bars with background (net pay)
+  while (bars.length < totalBars) {
     bars.push({ color: "bg-zinc-100" });
   }
 
