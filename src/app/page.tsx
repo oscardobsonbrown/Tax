@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type Currency, CURRENCY_NAMES } from "@/lib/tax-calculations";
 import MiniTaxGraph from "@/components/tax/MiniTaxGraph";
 
+const DEFAULT_SALARY = "100000";
+
 function HomeContent() {
   const searchParams = useSearchParams();
 
-  const [salary, setSalary] = useState(searchParams.get("salary") || "");
+  const [salary, setSalary] = useState(searchParams.get("salary") || DEFAULT_SALARY);
   const [wealth, setWealth] = useState(searchParams.get("wealth") || "");
   const [currency, setCurrency] = useState<Currency>((searchParams.get("currency") as Currency) || "AUD");
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -51,6 +53,13 @@ function HomeContent() {
       ? `/country/${country}?${paramString}`
       : `/country/${country}`;
   };
+
+  // Update URL with default salary if not provided
+  useEffect(() => {
+    if (!searchParams.get("salary")) {
+      updateUrl(DEFAULT_SALARY, wealth, currency);
+    }
+  }, []);
 
   interface CountryCardProps {
     countryCode: string;
