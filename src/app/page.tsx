@@ -53,12 +53,12 @@ function HomeContent() {
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-white px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
-      <div className="w-full max-w-[512px] border-b border-gray-200 pb-4">
+      <div className="w-full max-w-[562px] border-b border-gray-200 pb-4">
         <div className="text-black">TAX</div>
         <div className="text-zinc-500">Calculate, visualize, and compare global taxes</div>
       </div>
 
-      <div className="mt-8 w-full max-w-[512px]">
+      <div className="mt-8 w-full max-w-[562px]">
         <button
           type="button"
           onClick={() => setDetailsOpen(!detailsOpen)}
@@ -117,7 +117,7 @@ function HomeContent() {
         )}
       </div>
 
-      <div className="mt-8 w-full max-w-[512px] border-t border-gray-200 pt-8">
+      <div className="mt-8 w-full max-w-[562px] border-t border-gray-200 pt-8">
         <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
           <Link
