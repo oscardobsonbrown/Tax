@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type Currency, CURRENCY_NAMES } from "@/lib/tax-calculations";
+import MiniTaxGraph from "@/components/tax/MiniTaxGraph";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -50,6 +51,46 @@ function HomeContent() {
       ? `/country/${country}?${paramString}`
       : `/country/${country}`;
   };
+
+  interface CountryCardProps {
+    countryCode: string;
+    countryName: string;
+    year: string;
+    currency: Currency;
+  }
+
+  function CountryCard({ countryCode, countryName, year, currency }: CountryCardProps) {
+    return (
+      <Link
+        href={getCountryUrl(countryCode)}
+        className="no-underline"
+      >
+        <div className="flex flex-col border border-gray-300 px-[15px] py-3 transition-colors hover:border-gray-600">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="text-black">
+                {countryCode === "no" && "🇳🇴"}
+                {countryCode === "au" && "🇦🇺"}
+                {countryCode === "fr" && "🇫🇷"}
+                {countryCode === "es" && "🇪🇸"}
+                {countryCode === "gr" && "🇬🇷"}
+                {countryCode === "at" && "🇦🇹"}
+                {countryCode === "ch" && "🇨🇭"}
+                {countryCode === "mx" && "🇲🇽"}
+                {countryCode === "pt" && "🇵🇹"}
+                {countryCode === "jp" && "🇯🇵"}
+                {countryCode === "ee" && "🇪🇪"}
+              </div>
+              <div className="text-black">{countryName}</div>
+              <div className="text-zinc-500 text-xs">({year})</div>
+            </div>
+            <div className="text-black">{'->'}</div>
+          </div>
+          <MiniTaxGraph countryCode={countryCode} currency={currency} />
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-white px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
@@ -120,149 +161,17 @@ function HomeContent() {
       <div className="mt-8 w-full max-w-[562px] border-t border-gray-200 pt-8">
         <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
-          <Link
-            href={getCountryUrl("no")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇳🇴</div>
-                <div className="text-black">Norway</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("au")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇦🇺</div>
-                <div className="text-black">Australia</div>
-                <div className="text-zinc-500 text-xs">(FY25-26)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("fr")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇫🇷</div>
-                <div className="text-black">France</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("es")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇪🇸</div>
-                <div className="text-black">Spain</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("gr")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇬🇷</div>
-                <div className="text-black">Greece</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("at")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇦🇹</div>
-                <div className="text-black">Austria</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("ch")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇨🇭</div>
-                <div className="text-black">Switzerland</div>
-                <div className="text-zinc-500 text-xs">(2026, Zürich)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("mx")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇲🇽</div>
-                <div className="text-black">Mexico</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("pt")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇵🇹</div>
-                <div className="text-black">Portugal</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("jp")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇯🇵</div>
-                <div className="text-black">Japan</div>
-                <div className="text-zinc-500 text-xs">(FY2025)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
-          <Link
-            href={getCountryUrl("ee")}
-            className="no-underline"
-          >
-            <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="text-black">🇪🇪</div>
-                <div className="text-black">Estonia</div>
-                <div className="text-zinc-500 text-xs">(2026)</div>
-              </div>
-              <div className="text-black">{'->'}</div>
-            </div>
-          </Link>
+          <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} />
+          <CountryCard countryCode="au" countryName="Australia" year="FY25-26" currency={currency} />
+          <CountryCard countryCode="fr" countryName="France" year="2026" currency={currency} />
+          <CountryCard countryCode="es" countryName="Spain" year="2026" currency={currency} />
+          <CountryCard countryCode="gr" countryName="Greece" year="2026" currency={currency} />
+          <CountryCard countryCode="at" countryName="Austria" year="2026" currency={currency} />
+          <CountryCard countryCode="ch" countryName="Switzerland" year="2026, Zürich" currency={currency} />
+          <CountryCard countryCode="mx" countryName="Mexico" year="2026" currency={currency} />
+          <CountryCard countryCode="pt" countryName="Portugal" year="2026" currency={currency} />
+          <CountryCard countryCode="jp" countryName="Japan" year="FY2025" currency={currency} />
+          <CountryCard countryCode="ee" countryName="Estonia" year="2026" currency={currency} />
         </div>
       </div>
 
