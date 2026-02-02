@@ -176,7 +176,7 @@ function HomeContent() {
         </div>
       </div>
 
-      <div className="mt-auto flex flex-col items-center gap-3 text-center">
+      <div className="mt-16 flex flex-col items-center gap-3 text-center">
         <div className="h-[25px] w-[25px] rounded-[7px] bg-gray-300" />
         <div className="text-zinc-500">Tax calculators and visualizations for informational purposes only</div>
         <div className="text-zinc-500">©2026</div>
