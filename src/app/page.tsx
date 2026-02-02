@@ -125,12 +125,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇳🇴</div>
-                  <div className="text-black">Norway</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇳🇴</div>
+                <div className="text-black">Norway</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -140,12 +138,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇦🇺</div>
-                  <div className="text-black">Australia</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇦🇺</div>
+                <div className="text-black">Australia</div>
+                <div className="text-zinc-500 text-xs">(FY25-26)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -155,12 +151,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇫🇷</div>
-                  <div className="text-black">France</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇫🇷</div>
+                <div className="text-black">France</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -170,12 +164,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇪🇸</div>
-                  <div className="text-black">Spain</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇪🇸</div>
+                <div className="text-black">Spain</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -185,12 +177,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇬🇷</div>
-                  <div className="text-black">Greece</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇬🇷</div>
+                <div className="text-black">Greece</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -200,12 +190,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇦🇹</div>
-                  <div className="text-black">Austria</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇦🇹</div>
+                <div className="text-black">Austria</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -215,12 +203,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇨🇭</div>
-                  <div className="text-black">Switzerland</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year (Zürich)</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇨🇭</div>
+                <div className="text-black">Switzerland</div>
+                <div className="text-zinc-500 text-xs">(2026, Zürich)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -230,12 +216,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇲🇽</div>
-                  <div className="text-black">Mexico</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇲🇽</div>
+                <div className="text-black">Mexico</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -245,12 +229,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇵🇹</div>
-                  <div className="text-black">Portugal</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇵🇹</div>
+                <div className="text-black">Portugal</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -260,12 +242,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇯🇵</div>
-                  <div className="text-black">Japan</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇯🇵</div>
+                <div className="text-black">Japan</div>
+                <div className="text-zinc-500 text-xs">(FY2025)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
@@ -275,12 +255,10 @@ function HomeContent() {
             className="no-underline"
           >
             <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <div className="text-black">🇪🇪</div>
-                  <div className="text-black">Estonia</div>
-                </div>
-                <div className="text-zinc-500">2026 Tax Year</div>
+              <div className="flex items-center gap-2">
+                <div className="text-black">🇪🇪</div>
+                <div className="text-black">Estonia</div>
+                <div className="text-zinc-500 text-xs">(2026)</div>
               </div>
               <div className="text-black">{'->'}</div>
             </div>
