@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef, type ChangeEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type Currency, CURRENCY_NAMES } from "@/lib/tax-calculations";
@@ -15,52 +15,100 @@ function formatNumberWithSpaces(value: string): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+// Calculate cursor position after formatting
+function calculateNewCursorPosition(
+  oldValue: string,
+  newValue: string,
+  oldCursorPos: number
+): number {
+  const charsBeforeCursor = oldValue.slice(0, oldCursorPos).replace(/\s/g, "").length;
+  let newPos = 0;
+  let digitCount = 0;
+  for (let i = 0; i < newValue.length; i++) {
+    if (newValue[i] !== " ") {
+      digitCount++;
+    }
+    if (digitCount === charsBeforeCursor) {
+      newPos = i + 1;
+      break;
+    }
+  }
+  return newPos;
+}
+
+function useFormattedInput(initialValue: string) {
+  const [rawValue, setRawValue] = useState(initialValue.replace(/\s/g, ""));
+  const [displayValue, setDisplayValue] = useState(() => formatNumberWithSpaces(initialValue));
+  const inputRef = useRef<HTMLInputElement>(null);
+  const cursorPosRef = useRef<number>(0);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, onChange?: (raw: string) => void) => {
+    const input = e.target;
+    const value = input.value;
+    cursorPosRef.current = input.selectionStart || 0;
+
+    // Remove all spaces and non-digits
+    const rawValue = value.replace(/[^\d]/g, "");
+
+    if (rawValue === "") {
+      setRawValue("");
+      setDisplayValue("");
+      onChange?.("");
+      return;
+    }
+
+    const formatted = formatNumberWithSpaces(rawValue);
+    const newCursorPos = calculateNewCursorPosition(value, formatted, cursorPosRef.current);
+
+    setRawValue(rawValue);
+    setDisplayValue(formatted);
+    onChange?.(rawValue);
+
+    // Restore cursor position after React updates
+    requestAnimationFrame(() => {
+      if (inputRef.current) {
+        inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
+      }
+    });
+  };
+
+  const setValue = (value: string) => {
+    const raw = value.replace(/\s/g, "");
+    setRawValue(raw);
+    setDisplayValue(formatNumberWithSpaces(raw));
+  };
+
+  return { rawValue, displayValue, inputRef, handleChange, setValue };
+}
+
 function HomeContent() {
   const searchParams = useSearchParams();
 
-  const [salary, setSalary] = useState(searchParams.get("salary") || DEFAULT_SALARY);
-  const [displaySalary, setDisplaySalary] = useState(() => formatNumberWithSpaces(searchParams.get("salary") || DEFAULT_SALARY));
-  const [wealth, setWealth] = useState(searchParams.get("wealth") || "");
-  const [displayWealth, setDisplayWealth] = useState(() => formatNumberWithSpaces(searchParams.get("wealth") || ""));
+  const salaryInput = useFormattedInput(searchParams.get("salary") || DEFAULT_SALARY);
+  const wealthInput = useFormattedInput(searchParams.get("wealth") || "");
   const [currency, setCurrency] = useState<Currency>((searchParams.get("currency") as Currency) || "AUD");
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const updateUrl = (newSalary: string, newWealth: string, newCurrency: Currency) => {
     const url = new URL(window.location.href);
-    if (newSalary) url.searchParams.set("salary", newSalary.replace(/\s/g, ""));
+    if (newSalary) url.searchParams.set("salary", newSalary);
     else url.searchParams.delete("salary");
-    if (newWealth) url.searchParams.set("wealth", newWealth.replace(/\s/g, ""));
+    if (newWealth) url.searchParams.set("wealth", newWealth);
     else url.searchParams.delete("wealth");
     url.searchParams.set("currency", newCurrency);
     window.history.replaceState({}, "", url.toString());
   };
 
-  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const rawValue = value.replace(/\s/g, "");
-    setSalary(rawValue);
-    setDisplaySalary(formatNumberWithSpaces(rawValue));
-    updateUrl(rawValue, wealth, currency);
-  };
-
-  const handleWealthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const rawValue = value.replace(/\s/g, "");
-    setWealth(rawValue);
-    setDisplayWealth(formatNumberWithSpaces(rawValue));
-    updateUrl(salary, rawValue, currency);
-  };
-
   const handleCurrencyChange = (newCurrency: Currency) => {
     setCurrency(newCurrency);
-    updateUrl(salary, wealth, newCurrency);
+    updateUrl(salaryInput.rawValue, wealthInput.rawValue, newCurrency);
   };
 
   const getCountryUrl = (country: string) => {
     const params = new URLSearchParams();
     params.set("currency", currency);
-    if (salary) params.set("salary", salary.replace(/\s/g, ""));
-    if (wealth) params.set("wealth", wealth.replace(/\s/g, ""));
+    if (salaryInput.rawValue) params.set("salary", salaryInput.rawValue);
+    if (wealthInput.rawValue) params.set("wealth", wealthInput.rawValue);
     const paramString = params.toString();
     return paramString
       ? `/country/${country}?${paramString}`
@@ -70,8 +118,8 @@ function HomeContent() {
   // Update URL with default salary if not provided
   useEffect(() => {
     if (!searchParams.get("salary")) {
-      updateUrl(DEFAULT_SALARY, wealth, currency);
-      setDisplaySalary(formatNumberWithSpaces(DEFAULT_SALARY));
+      updateUrl(DEFAULT_SALARY, wealthInput.rawValue, currency);
+      salaryInput.setValue(DEFAULT_SALARY);
     }
   }, []);
 
@@ -131,9 +179,9 @@ function HomeContent() {
         >
           <div className="flex items-center gap-3">
             <span className="text-black">YOUR DETAILS</span>
-            {!detailsOpen && (salary || wealth) && (
+            {!detailsOpen && (salaryInput.rawValue || wealthInput.rawValue) && (
               <span className="text-zinc-500 text-xs">
-                {formatNumberWithSpaces(salary) || "0"} ({currency}) {wealth && `/ ${formatNumberWithSpaces(wealth)} (${currency})`}
+                {salaryInput.displayValue || "0"} ({currency}) {wealthInput.displayValue && `/ ${wealthInput.displayValue} (${currency})`}
               </span>
             )}
           </div>
@@ -160,9 +208,10 @@ function HomeContent() {
               <div className="flex flex-col gap-2">
                 <div className="text-zinc-500 text-xs">Gross income</div>
                 <input
+                  ref={salaryInput.inputRef}
                   type="text"
-                  value={displaySalary}
-                  onChange={handleSalaryChange}
+                  value={salaryInput.displayValue}
+                  onChange={(e) => salaryInput.handleChange(e, (raw) => updateUrl(raw, wealthInput.rawValue, currency))}
                   placeholder="0"
                   className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
                 />
@@ -170,9 +219,10 @@ function HomeContent() {
               <div className="flex flex-col gap-2">
                 <div className="text-zinc-500 text-xs">Net wealth</div>
                 <input
+                  ref={wealthInput.inputRef}
                   type="text"
-                  value={displayWealth}
-                  onChange={handleWealthChange}
+                  value={wealthInput.displayValue}
+                  onChange={(e) => wealthInput.handleChange(e, (raw) => updateUrl(salaryInput.rawValue, raw, currency))}
                   placeholder="0"
                   className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
                 />
@@ -185,17 +235,17 @@ function HomeContent() {
       <div className="mt-8 w-full max-w-[562px]">
         <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
-          <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="au" countryName="Australia" year="FY25-26" currency={currency} salary={salary} />
-          <CountryCard countryCode="fr" countryName="France" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="es" countryName="Spain" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="gr" countryName="Greece" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="at" countryName="Austria" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="ch" countryName="Switzerland" year="2026, Zürich" currency={currency} salary={salary} />
-          <CountryCard countryCode="mx" countryName="Mexico" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="pt" countryName="Portugal" year="2026" currency={currency} salary={salary} />
-          <CountryCard countryCode="jp" countryName="Japan" year="FY2025" currency={currency} salary={salary} />
-          <CountryCard countryCode="ee" countryName="Estonia" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="au" countryName="Australia" year="FY25-26" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="fr" countryName="France" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="es" countryName="Spain" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="gr" countryName="Greece" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="at" countryName="Austria" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="ch" countryName="Switzerland" year="2026, Zürich" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="mx" countryName="Mexico" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="pt" countryName="Portugal" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="jp" countryName="Japan" year="FY2025" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard countryCode="ee" countryName="Estonia" year="2026" currency={currency} salary={salaryInput.rawValue} />
         </div>
       </div>
 
