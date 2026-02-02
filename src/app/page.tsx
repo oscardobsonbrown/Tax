@@ -57,9 +57,10 @@ function HomeContent() {
     countryName: string;
     year: string;
     currency: Currency;
+    salary: string;
   }
 
-  function CountryCard({ countryCode, countryName, year, currency }: CountryCardProps) {
+  function CountryCard({ countryCode, countryName, year, currency, salary }: CountryCardProps) {
     return (
       <Link
         href={getCountryUrl(countryCode)}
@@ -84,7 +85,7 @@ function HomeContent() {
             <div className="text-zinc-500 text-xs">({year})</div>
           </div>
           <div className="flex items-center gap-4">
-            <MiniTaxGraph countryCode={countryCode} currency={currency} />
+            <MiniTaxGraph countryCode={countryCode} currency={currency} salary={salary} />
             <div className="text-black">{'->'}</div>
           </div>
         </div>
@@ -161,17 +162,17 @@ function HomeContent() {
       <div className="mt-8 w-full max-w-[562px] border-t border-gray-200 pt-8">
         <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
-          <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} />
-          <CountryCard countryCode="au" countryName="Australia" year="FY25-26" currency={currency} />
-          <CountryCard countryCode="fr" countryName="France" year="2026" currency={currency} />
-          <CountryCard countryCode="es" countryName="Spain" year="2026" currency={currency} />
-          <CountryCard countryCode="gr" countryName="Greece" year="2026" currency={currency} />
-          <CountryCard countryCode="at" countryName="Austria" year="2026" currency={currency} />
-          <CountryCard countryCode="ch" countryName="Switzerland" year="2026, Zürich" currency={currency} />
-          <CountryCard countryCode="mx" countryName="Mexico" year="2026" currency={currency} />
-          <CountryCard countryCode="pt" countryName="Portugal" year="2026" currency={currency} />
-          <CountryCard countryCode="jp" countryName="Japan" year="FY2025" currency={currency} />
-          <CountryCard countryCode="ee" countryName="Estonia" year="2026" currency={currency} />
+          <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="au" countryName="Australia" year="FY25-26" currency={currency} salary={salary} />
+          <CountryCard countryCode="fr" countryName="France" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="es" countryName="Spain" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="gr" countryName="Greece" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="at" countryName="Austria" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="ch" countryName="Switzerland" year="2026, Zürich" currency={currency} salary={salary} />
+          <CountryCard countryCode="mx" countryName="Mexico" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="pt" countryName="Portugal" year="2026" currency={currency} salary={salary} />
+          <CountryCard countryCode="jp" countryName="Japan" year="FY2025" currency={currency} salary={salary} />
+          <CountryCard countryCode="ee" countryName="Estonia" year="2026" currency={currency} salary={salary} />
         </div>
       </div>
 
