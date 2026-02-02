@@ -159,7 +159,7 @@ function HomeContent() {
         )}
       </div>
 
-      <div className="mt-8 w-full max-w-[562px] border-t border-gray-200 pt-8">
+      <div className="mt-8 w-full max-w-[562px]">
         <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
           <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} salary={salary} />
