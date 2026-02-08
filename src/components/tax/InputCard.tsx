@@ -17,16 +17,16 @@ export default function InputCard({
 
   return (
     <div className="flex flex-col gap-[7px]">
-      <label className="text-zinc-600 font-mono text-xs leading-4 shrink-0">
+      <label className="shrink-0 font-mono text-muted-dark text-xs leading-4">
         {label}
       </label>
-      <div className="flex h-fit shrink-0 flex-col gap-0 border border-zinc-300 px-3 py-3 w-full">
+      <div className="flex h-fit w-full shrink-0 flex-col gap-0 border border-border px-3 py-3">
         <input
-          type="text"
-          value={formattedValue}
+          className="w-full bg-transparent font-mono text-foreground text-xs leading-2 outline-none"
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="text-black font-mono text-xs leading-2 w-full bg-transparent outline-none"
+          type="text"
+          value={formattedValue}
         />
       </div>
     </div>
