@@ -4,6 +4,9 @@ import { join } from "node:path";
 import { describe, it } from "node:test";
 import { satisfies } from "semver";
 
+// Regex patterns for version extraction
+const CARET_TILDE_PATTERN = /^\^|~/;
+
 /**
  * Unit tests for dependency installation
  * Validates Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3
@@ -28,7 +31,7 @@ describe("Dependency Installation", () => {
       );
 
       const version = packageJson.devDependencies.ultracite.replace(
-        /^\^|~/,
+        CARET_TILDE_PATTERN,
         ""
       );
       assert.ok(
@@ -45,7 +48,10 @@ describe("Dependency Installation", () => {
         "oxlint should be in devDependencies"
       );
 
-      const version = packageJson.devDependencies.oxlint.replace(/^\^|~/, "");
+      const version = packageJson.devDependencies.oxlint.replace(
+        CARET_TILDE_PATTERN,
+        ""
+      );
       assert.ok(
         satisfies(version, ">=1.0.0"),
         `oxlint version should be ≥1.0.0, got ${version}`

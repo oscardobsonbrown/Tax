@@ -3,7 +3,13 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+// Regex patterns for identifier validation
+const IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+const UPPERCASE_IDENTIFIER_PATTERN = /^[A-Z][a-zA-Z0-9]*$/;
+const LOWERCASE_IDENTIFIER_PATTERN = /^[a-z][a-zA-Z0-9_]*$/;
+const IDENTIFIER_WITH_HYPHEN_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_-]*$/;
 
 /**
  * Property-based tests for source file processing
@@ -33,10 +39,15 @@ describe("Property 8: Linters process source files", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -51,10 +62,15 @@ describe("Property 8: Linters process source files", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -82,7 +98,7 @@ describe("Property 8: Linters process source files", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate TypeScript file with violations (using var, missing semicolon)
@@ -118,7 +134,7 @@ describe("Property 8: Linters process source files", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+          .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
         fc
           .string({ minLength: 1, maxLength: 30 })
           .filter((s) => !(s.includes('"') || s.includes("'"))),
@@ -161,7 +177,7 @@ export default function ${componentName}() {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate TypeScript file with violations (double equals)
@@ -199,7 +215,7 @@ export default function ${componentName}() {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+          .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
         fc
           .string({ minLength: 1, maxLength: 30 })
           .filter((s) => !(s.includes('"') || s.includes("'"))),
@@ -238,13 +254,13 @@ export default function ${componentName}() {
         fc.record({
           file1: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           file2: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           file3: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           value1: fc.integer({ min: 1, max: 100 }),
           value2: fc.integer({ min: 1, max: 100 }),
         }),
@@ -288,10 +304,10 @@ export default function ${componentName}() {
         fc.record({
           subdir: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(s)),
+            .filter((s) => IDENTIFIER_WITH_HYPHEN_PATTERN.test(s)),
           filename: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -328,10 +344,10 @@ export default function ${componentName}() {
         fc.record({
           tsFile: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           tsxFile: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -378,7 +394,7 @@ export default function ${componentName}() {
         fc.record({
           filename: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           violationType: fc.constantFrom(
             "var",
             "semicolon",
@@ -403,6 +419,10 @@ export default function ${componentName}() {
             case "doubleEquals":
               code = `const ${config.filename} = ${config.value};\nconst check = ${config.filename} == ${config.value};\n`;
               break;
+            default:
+              throw new Error(
+                `Unknown violation type: ${config.violationType}`
+              );
           }
 
           createTestFile(`${config.filename}.ts`, code);

@@ -3,7 +3,13 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+// Regex patterns for validation
+const LOWERCASE_IDENTIFIER_PATTERN = /^[a-z][a-z0-9]*$/;
+const UPPERCASE_IDENTIFIER_PATTERN = /^[A-Z][a-z0-9]*$/;
+const ALPHANUMERIC_SPACE_PATTERN = /^[a-zA-Z0-9 ]+$/;
+const FILE_PATH_PATTERN = /^[a-zA-Z0-9/._-]+$/;
 
 /**
  * Property-based tests for successful linter execution on valid code
@@ -33,10 +39,15 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -51,10 +62,15 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -82,7 +98,7 @@ describe("Property 11: Linters execute successfully on valid code", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+          .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate valid TypeScript code following ultracite rules
@@ -123,10 +139,10 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           funcName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           paramName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           returnValue: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -168,13 +184,15 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           componentName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[A-Z][a-z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           imgSrc: fc
             .string({ minLength: 2, maxLength: 30 })
-            .filter((s) => /^[a-zA-Z0-9/._-]+$/.test(s)),
+            .filter((s) => FILE_PATH_PATTERN.test(s)),
           imgAlt: fc
             .string({ minLength: 2, maxLength: 30 })
-            .filter((s) => /^[a-zA-Z0-9 ]+$/.test(s) && s.trim().length > 1),
+            .filter(
+              (s) => ALPHANUMERIC_SPACE_PATTERN.test(s) && s.trim().length > 1
+            ),
         }),
         (config) => {
           // Generate valid Next.js component using next/image (correct way)
@@ -216,10 +234,10 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           funcName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           paramName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           multiplier: fc.integer({ min: 1, max: 10 }),
         }),
         (config) => {
@@ -262,13 +280,15 @@ describe("Property 11: Linters execute successfully on valid code", () => {
           .record({
             objName: fc
               .string({ minLength: 1, maxLength: 15 })
-              .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+              .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
             key1: fc
               .string({ minLength: 1, maxLength: 10 })
-              .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+              .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
             key2: fc
               .string({ minLength: 1, maxLength: 10 })
-              .filter((s) => /^[a-z][a-z0-9]*$/.test(s) && s !== "key1"),
+              .filter(
+                (s) => LOWERCASE_IDENTIFIER_PATTERN.test(s) && s !== "key1"
+              ),
             val1: fc.integer({ min: 1, max: 100 }),
             val2: fc.integer({ min: 1, max: 100 }),
           })
@@ -312,7 +332,7 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           arrName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           values: fc.array(fc.integer({ min: 1, max: 100 }), {
             minLength: 2,
             maxLength: 5,
@@ -357,13 +377,17 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           pageName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[A-Z][a-z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           title: fc
             .string({ minLength: 2, maxLength: 30 })
-            .filter((s) => /^[a-zA-Z0-9 ]+$/.test(s) && s.trim().length > 1),
+            .filter(
+              (s) => ALPHANUMERIC_SPACE_PATTERN.test(s) && s.trim().length > 1
+            ),
           content: fc
             .string({ minLength: 2, maxLength: 50 })
-            .filter((s) => /^[a-zA-Z0-9 ]+$/.test(s) && s.trim().length > 1),
+            .filter(
+              (s) => ALPHANUMERIC_SPACE_PATTERN.test(s) && s.trim().length > 1
+            ),
         }),
         (config) => {
           // Generate valid Next.js page component
@@ -456,7 +480,10 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           varName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s) && !reservedWords.has(s)),
+            .filter(
+              (s) =>
+                LOWERCASE_IDENTIFIER_PATTERN.test(s) && !reservedWords.has(s)
+            ),
           value1: fc.integer({ min: 1, max: 100 }),
           value2: fc.integer({ min: 1, max: 100 }),
         }),
@@ -499,13 +526,17 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           componentName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[A-Z][a-z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           text1: fc
             .string({ minLength: 2, maxLength: 30 })
-            .filter((s) => /^[a-zA-Z0-9 ]+$/.test(s) && s.trim().length > 1),
+            .filter(
+              (s) => ALPHANUMERIC_SPACE_PATTERN.test(s) && s.trim().length > 1
+            ),
           text2: fc
             .string({ minLength: 2, maxLength: 30 })
-            .filter((s) => /^[a-zA-Z0-9 ]+$/.test(s) && s.trim().length > 1),
+            .filter(
+              (s) => ALPHANUMERIC_SPACE_PATTERN.test(s) && s.trim().length > 1
+            ),
         }),
         (config) => {
           // Generate valid component with JSX fragments
@@ -546,7 +577,7 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           varName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           threshold: fc.integer({ min: 1, max: 50 }),
           value: fc.integer({ min: 1, max: 100 }),
         }),
@@ -641,10 +672,16 @@ describe("Property 11: Linters execute successfully on valid code", () => {
         fc.record({
           arrName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s) && !reservedWords.has(s)),
+            .filter(
+              (s) =>
+                LOWERCASE_IDENTIFIER_PATTERN.test(s) && !reservedWords.has(s)
+            ),
           itemName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-z0-9]*$/.test(s) && !reservedWords.has(s)),
+            .filter(
+              (s) =>
+                LOWERCASE_IDENTIFIER_PATTERN.test(s) && !reservedWords.has(s)
+            ),
           values: fc.array(fc.integer({ min: 1, max: 100 }), {
             minLength: 2,
             maxLength: 5,

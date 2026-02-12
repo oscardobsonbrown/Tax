@@ -9,7 +9,13 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+// Regex patterns for validation
+const IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+const UPPERCASE_IDENTIFIER_PATTERN = /^[A-Z][a-zA-Z0-9]*$/;
+const LOWERCASE_IDENTIFIER_PATTERN = /^[a-z][a-zA-Z0-9]*$/;
+const KEBAB_CASE_PATTERN = /^[a-z][a-z0-9-]*$/;
 
 /**
  * Property-based tests for auto-fix functionality
@@ -67,7 +73,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate code without semicolons
@@ -99,7 +105,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         fc
           .integer({ min: 3, max: 8 })
@@ -136,7 +142,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           varName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
           spacesBeforeEquals: fc.integer({ min: 0, max: 5 }),
           spacesAfterEquals: fc.integer({ min: 0, max: 5 }),
@@ -174,10 +180,10 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           var1: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           var2: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value1: fc.integer({ min: 1, max: 100 }),
           value2: fc.integer({ min: 1, max: 100 }),
         }),
@@ -213,7 +219,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           componentName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           text: fc
             .string({ minLength: 1, maxLength: 30 })
             .filter((s) => !(s.includes('"') || s.includes("'"))),
@@ -249,13 +255,13 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           objName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           key1: fc
             .string({ minLength: 1, maxLength: 10 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           key2: fc
             .string({ minLength: 1, maxLength: 10 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           val1: fc.integer({ min: 1, max: 100 }),
           val2: fc.integer({ min: 1, max: 100 }),
         }),
@@ -292,10 +298,10 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           funcName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           paramName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           returnValue: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -331,7 +337,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           arrName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           values: fc.array(fc.integer({ min: 1, max: 100 }), {
             minLength: 2,
             maxLength: 5,
@@ -376,10 +382,10 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           funcName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           varName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -420,7 +426,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           varName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -457,13 +463,13 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           className: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           methodName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           propName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           propValue: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -505,13 +511,13 @@ describe("Property 10: Auto-fix corrects violations", () => {
         fc.record({
           import1: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => UPPERCASE_IDENTIFIER_PATTERN.test(s)),
           import2: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => LOWERCASE_IDENTIFIER_PATTERN.test(s)),
           module: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-z][a-zA-Z0-9-]*$/.test(s)),
+            .filter((s) => KEBAB_CASE_PATTERN.test(s)),
         }),
         (config) => {
           // Generate import with poor formatting and usage to prevent removal

@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect, Suspense, useRef, type ChangeEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { type Currency, CURRENCY_NAMES } from "@/lib/tax-calculations";
-import MiniTaxGraph from "@/components/tax/MiniTaxGraph";
+import { type ChangeEvent, Suspense, useEffect, useRef, useState } from "react";
+import MiniTaxGraph from "@/components/tax/mini-tax-graph";
+import { CURRENCY_NAMES, type Currency } from "@/lib/tax-calculations";
 
 const DEFAULT_SALARY = "100000";
 
 // Format number with spaces as thousands separator
 function formatNumberWithSpaces(value: string): string {
-  const num = parseInt(value.replace(/\s/g, ""), 10);
-  if (isNaN(num)) return value;
+  const num = Number.parseInt(value.replace(/\s/g, ""), 10);
+  if (Number.isNaN(num)) {
+    return value;
+  }
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
@@ -21,7 +23,9 @@ function calculateNewCursorPosition(
   newValue: string,
   oldCursorPos: number
 ): number {
-  const charsBeforeCursor = oldValue.slice(0, oldCursorPos).replace(/\s/g, "").length;
+  const charsBeforeCursor = oldValue
+    .slice(0, oldCursorPos)
+    .replace(/\s/g, "").length;
   let newPos = 0;
   let digitCount = 0;
   for (let i = 0; i < newValue.length; i++) {
@@ -38,11 +42,16 @@ function calculateNewCursorPosition(
 
 function useFormattedInput(initialValue: string) {
   const [rawValue, setRawValue] = useState(initialValue.replace(/\s/g, ""));
-  const [displayValue, setDisplayValue] = useState(() => formatNumberWithSpaces(initialValue));
+  const [displayValue, setDisplayValue] = useState(() =>
+    formatNumberWithSpaces(initialValue)
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const cursorPosRef = useRef<number>(0);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>, onChange?: (raw: string) => void) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    onChange?: (raw: string) => void
+  ) => {
     const input = e.target;
     const value = input.value;
     cursorPosRef.current = input.selectionStart || 0;
@@ -58,7 +67,11 @@ function useFormattedInput(initialValue: string) {
     }
 
     const formatted = formatNumberWithSpaces(rawValue);
-    const newCursorPos = calculateNewCursorPosition(value, formatted, cursorPosRef.current);
+    const newCursorPos = calculateNewCursorPosition(
+      value,
+      formatted,
+      cursorPosRef.current
+    );
 
     setRawValue(rawValue);
     setDisplayValue(formatted);
@@ -84,17 +97,31 @@ function useFormattedInput(initialValue: string) {
 function HomeContent() {
   const searchParams = useSearchParams();
 
-  const salaryInput = useFormattedInput(searchParams.get("salary") || DEFAULT_SALARY);
+  const salaryInput = useFormattedInput(
+    searchParams.get("salary") || DEFAULT_SALARY
+  );
   const wealthInput = useFormattedInput(searchParams.get("wealth") || "");
-  const [currency, setCurrency] = useState<Currency>((searchParams.get("currency") as Currency) || "AUD");
+  const [currency, setCurrency] = useState<Currency>(
+    (searchParams.get("currency") as Currency) || "AUD"
+  );
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const updateUrl = (newSalary: string, newWealth: string, newCurrency: Currency) => {
+  const updateUrl = (
+    newSalary: string,
+    newWealth: string,
+    newCurrency: Currency
+  ) => {
     const url = new URL(window.location.href);
-    if (newSalary) url.searchParams.set("salary", newSalary);
-    else url.searchParams.delete("salary");
-    if (newWealth) url.searchParams.set("wealth", newWealth);
-    else url.searchParams.delete("wealth");
+    if (newSalary) {
+      url.searchParams.set("salary", newSalary);
+    } else {
+      url.searchParams.delete("salary");
+    }
+    if (newWealth) {
+      url.searchParams.set("wealth", newWealth);
+    } else {
+      url.searchParams.delete("wealth");
+    }
     url.searchParams.set("currency", newCurrency);
     window.history.replaceState({}, "", url.toString());
   };
@@ -107,8 +134,12 @@ function HomeContent() {
   const getCountryUrl = (country: string) => {
     const params = new URLSearchParams();
     params.set("currency", currency);
-    if (salaryInput.rawValue) params.set("salary", salaryInput.rawValue);
-    if (wealthInput.rawValue) params.set("wealth", wealthInput.rawValue);
+    if (salaryInput.rawValue) {
+      params.set("salary", salaryInput.rawValue);
+    }
+    if (wealthInput.rawValue) {
+      params.set("wealth", wealthInput.rawValue);
+    }
     const paramString = params.toString();
     return paramString
       ? `/country/${country}?${paramString}`
@@ -116,6 +147,7 @@ function HomeContent() {
   };
 
   // Update URL with default salary if not provided
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally omitted dependencies for one-time mount effect
   useEffect(() => {
     if (!searchParams.get("salary")) {
       updateUrl(DEFAULT_SALARY, wealthInput.rawValue, currency);
@@ -131,15 +163,18 @@ function HomeContent() {
     salary: string;
   }
 
-  function CountryCard({ countryCode, countryName, year, currency, salary }: CountryCardProps) {
+  function CountryCard({
+    countryCode,
+    countryName,
+    year,
+    currency,
+    salary,
+  }: CountryCardProps) {
     return (
-      <Link
-        href={getCountryUrl(countryCode)}
-        className="no-underline"
-      >
-        <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-600">
+      <Link className="no-underline" href={getCountryUrl(countryCode)}>
+        <div className="flex items-center justify-between border border-border px-[15px] py-4 transition-colors hover:border-hover">
           <div className="flex items-center gap-2">
-            <div className="text-black">
+            <div className="text-foreground">
               {countryCode === "no" && "🇳🇴"}
               {countryCode === "au" && "🇦🇺"}
               {countryCode === "fr" && "🇫🇷"}
@@ -152,12 +187,16 @@ function HomeContent() {
               {countryCode === "jp" && "🇯🇵"}
               {countryCode === "ee" && "🇪🇪"}
             </div>
-            <div className="text-black">{countryName}</div>
-            <div className="text-zinc-500 text-xs">({year})</div>
+            <div className="text-foreground">{countryName}</div>
+            <div className="text-muted text-xs">({year})</div>
           </div>
           <div className="flex items-center gap-4">
-            <MiniTaxGraph countryCode={countryCode} currency={currency} salary={salary} />
-            <div className="text-black">{'->'}</div>
+            <MiniTaxGraph
+              countryCode={countryCode}
+              currency={currency}
+              salary={salary}
+            />
+            <div className="text-foreground">{"->"}</div>
           </div>
         </div>
       </Link>
@@ -165,38 +204,46 @@ function HomeContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-white px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
-      <div className="w-full max-w-[562px] border-b border-gray-200 pb-4">
-        <div className="text-black">TAX</div>
-        <div className="text-zinc-500">Calculate, visualize, and compare global taxes</div>
+    <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
+      <div className="w-full max-w-[562px] border-border border-b pb-4">
+        <div className="text-foreground">TAX</div>
+        <div className="text-muted">
+          Calculate, visualize, and compare global taxes
+        </div>
       </div>
 
       <div className="mt-8 w-full max-w-[562px]">
         <button
-          type="button"
+          className="flex w-full items-center justify-between border border-border px-4 py-3 transition-colors hover:border-hover"
           onClick={() => setDetailsOpen(!detailsOpen)}
-          className="w-full flex items-center justify-between border border-gray-300 px-4 py-3 transition-colors hover:border-gray-600"
+          type="button"
         >
           <div className="flex items-center gap-3">
-            <span className="text-black">YOUR DETAILS</span>
+            <span className="text-foreground">YOUR DETAILS</span>
             {!detailsOpen && (salaryInput.rawValue || wealthInput.rawValue) && (
-              <span className="text-zinc-500 text-xs">
-                {salaryInput.displayValue || "0"} ({currency}) {wealthInput.displayValue && `/ ${wealthInput.displayValue} (${currency})`}
+              <span className="text-muted text-xs">
+                {salaryInput.displayValue || "0"} ({currency}){" "}
+                {wealthInput.displayValue &&
+                  `/ ${wealthInput.displayValue} (${currency})`}
               </span>
             )}
           </div>
-          <span className="text-zinc-400 text-xs">{detailsOpen ? "−" : "+"}</span>
+          <span className="text-muted-light text-xs">
+            {detailsOpen ? "−" : "+"}
+          </span>
         </button>
 
         {detailsOpen && (
-          <div className="border-x border-b border-gray-300 px-4 py-4">
+          <div className="border-border border-x border-b px-4 py-4">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <div className="text-zinc-500 text-xs">Currency</div>
+                <div className="text-muted text-xs">Currency</div>
                 <select
+                  className="border border-border bg-surface px-3 py-2 text-foreground text-sm outline-none transition-colors hover:border-hover focus:border-hover"
+                  onChange={(e) =>
+                    handleCurrencyChange(e.target.value as Currency)
+                  }
                   value={currency}
-                  onChange={(e) => handleCurrencyChange(e.target.value as Currency)}
-                  className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black bg-white"
                 >
                   {(Object.keys(CURRENCY_NAMES) as Currency[]).map((c) => (
                     <option key={c} value={c}>
@@ -206,25 +253,33 @@ function HomeContent() {
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-zinc-500 text-xs">Gross income</div>
+                <div className="text-muted text-xs">Gross income</div>
                 <input
+                  className="border border-border px-3 py-2 text-foreground text-sm outline-none transition-colors hover:border-hover focus:border-hover"
+                  onChange={(e) =>
+                    salaryInput.handleChange(e, (raw) =>
+                      updateUrl(raw, wealthInput.rawValue, currency)
+                    )
+                  }
+                  placeholder="0"
                   ref={salaryInput.inputRef}
                   type="text"
                   value={salaryInput.displayValue}
-                  onChange={(e) => salaryInput.handleChange(e, (raw) => updateUrl(raw, wealthInput.rawValue, currency))}
-                  placeholder="0"
-                  className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-zinc-500 text-xs">Net wealth</div>
+                <div className="text-muted text-xs">Net wealth</div>
                 <input
+                  className="border border-border px-3 py-2 text-foreground text-sm outline-none transition-colors hover:border-hover focus:border-hover"
+                  onChange={(e) =>
+                    wealthInput.handleChange(e, (raw) =>
+                      updateUrl(salaryInput.rawValue, raw, currency)
+                    )
+                  }
+                  placeholder="0"
                   ref={wealthInput.inputRef}
                   type="text"
                   value={wealthInput.displayValue}
-                  onChange={(e) => wealthInput.handleChange(e, (raw) => updateUrl(salaryInput.rawValue, raw, currency))}
-                  placeholder="0"
-                  className="border border-gray-300 px-3 py-2 text-sm text-black outline-none transition-colors hover:border-gray-600 focus:border-black"
                 />
               </div>
             </div>
@@ -233,27 +288,95 @@ function HomeContent() {
       </div>
 
       <div className="mt-8 w-full max-w-[562px]">
-        <div className="mb-6 text-black">COUNTRIES</div>
+        <div className="mb-6 text-foreground">COUNTRIES</div>
         <div className="flex flex-col gap-2">
-          <CountryCard countryCode="no" countryName="Norway" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="au" countryName="Australia" year="FY25-26" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="fr" countryName="France" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="es" countryName="Spain" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="gr" countryName="Greece" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="at" countryName="Austria" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="ch" countryName="Switzerland" year="2026, Zürich" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="mx" countryName="Mexico" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="pt" countryName="Portugal" year="2026" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="jp" countryName="Japan" year="FY2025" currency={currency} salary={salaryInput.rawValue} />
-          <CountryCard countryCode="ee" countryName="Estonia" year="2026" currency={currency} salary={salaryInput.rawValue} />
+          <CountryCard
+            countryCode="no"
+            countryName="Norway"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="au"
+            countryName="Australia"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="FY25-26"
+          />
+          <CountryCard
+            countryCode="fr"
+            countryName="France"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="es"
+            countryName="Spain"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="gr"
+            countryName="Greece"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="at"
+            countryName="Austria"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="ch"
+            countryName="Switzerland"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026, Zürich"
+          />
+          <CountryCard
+            countryCode="mx"
+            countryName="Mexico"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="pt"
+            countryName="Portugal"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
+          <CountryCard
+            countryCode="jp"
+            countryName="Japan"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="FY2025"
+          />
+          <CountryCard
+            countryCode="ee"
+            countryName="Estonia"
+            currency={currency}
+            salary={salaryInput.rawValue}
+            year="2026"
+          />
         </div>
       </div>
 
       <div className="mt-16 flex flex-col items-center gap-3 text-center">
-        <div className="h-[25px] w-[25px] rounded-[7px] bg-gray-300" />
-        <div className="text-zinc-500">Tax calculators and visualizations for informational purposes only</div>
-        <div className="text-zinc-500">©2026</div>
-        <div className="text-zinc-500">- Oscar</div>
+        <div className="h-[25px] w-[25px] rounded-[7px] bg-muted-darker" />
+        <div className="text-muted">
+          Tax calculators and visualizations for informational purposes only
+        </div>
+        <div className="text-muted">©2026</div>
+        <div className="text-muted">- Oscar</div>
       </div>
     </div>
   );
@@ -261,7 +384,13 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-white font-mono text-sm text-zinc-500">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background font-mono text-muted text-sm">
+          Loading...
+        </div>
+      }
+    >
       <HomeContent />
     </Suspense>
   );

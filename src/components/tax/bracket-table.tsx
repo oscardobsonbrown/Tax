@@ -24,7 +24,7 @@ export default function BracketTable({
       {brackets.map((bracket, index) => (
         <div
           className="flex shrink-0 justify-between border-border border-b px-0 py-[9px]"
-          key={index}
+          key={`bracket-${bracket.min}-${bracket.max}-${index}`}
         >
           <div className="w-[80%] font-mono text-foreground text-xs leading-4">
             Bracket {index + 1}: {formatCurrencyWithSymbol(bracket.min)}

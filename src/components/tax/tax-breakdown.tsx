@@ -133,6 +133,7 @@ export default function TaxBreakdown({
         </div>
 
         <div
+          aria-hidden="true"
           className="relative flex h-12 items-center justify-center gap-0.5"
           onMouseLeave={() => setHoveredBar(null)}
           onMouseMove={(e) => {
@@ -152,12 +153,11 @@ export default function TaxBreakdown({
               });
             }
           }}
-          role="presentation"
         >
           {allBars.map((bar, idx) => (
             <div
               className={`h-12 w-[2px] shrink-0 ${bar.color}`}
-              key={`income-bar-${idx}`}
+              key={`income-bar-${bar.type}-${idx}`}
             />
           ))}
 
