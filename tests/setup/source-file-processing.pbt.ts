@@ -88,7 +88,7 @@ describe("Property 8: Linters process source files", () => {
           // Generate TypeScript file with violations (using var, missing semicolon)
           const code = `var ${varName} = ${value}\n`;
           const filename = `test-${varName}.ts`;
-          const filePath = createTestFile(filename, code);
+          createTestFile(filename, code);
 
           // Run Biome on the test directory
           const result = runBiomeCheck(testDir);
@@ -131,7 +131,7 @@ export default function ${componentName}() {
 }
 `;
           const filename = `${componentName}.tsx`;
-          const filePath = createTestFile(filename, code);
+          createTestFile(filename, code);
 
           // Run Biome on the test directory
           const result = runBiomeCheck(testDir);
@@ -167,7 +167,7 @@ export default function ${componentName}() {
           // Generate TypeScript file with violations (double equals)
           const code = `const ${varName} = ${value};\nconst check = ${varName} == ${value};\nconsole.log(check);\n`;
           const filename = `test-ox-${varName}.ts`;
-          const filePath = createTestFile(filename, code);
+          createTestFile(filename, code);
 
           // Run oxlint on the test directory
           const result = runOxlint(testDir);
@@ -211,7 +211,7 @@ export default function ${componentName}() {
 }
 `;
           const filename = `${componentName}.tsx`;
-          const filePath = createTestFile(filename, code);
+          createTestFile(filename, code);
 
           // Run oxlint on the test directory
           const result = runOxlint(testDir);
@@ -250,15 +250,9 @@ export default function ${componentName}() {
         }),
         (config) => {
           // Create multiple files with violations
-          const file1Path = createTestFile(
-            `${config.file1}.ts`,
-            `var x = ${config.value1}\n`
-          );
-          const file2Path = createTestFile(
-            `${config.file2}.ts`,
-            `var y = ${config.value2}\n`
-          );
-          const file3Path = createTestFile(
+          createTestFile(`${config.file1}.ts`, `var x = ${config.value1}\n`);
+          createTestFile(`${config.file2}.ts`, `var y = ${config.value2}\n`);
+          createTestFile(
             `${config.file3}.tsx`,
             `export default function ${config.file3}() { return <img src="test.jpg" alt="test" /> }`
           );
@@ -411,7 +405,7 @@ export default function ${componentName}() {
               break;
           }
 
-          const filePath = createTestFile(`${config.filename}.ts`, code);
+          createTestFile(`${config.filename}.ts`, code);
 
           // Run Biome on the test directory
           const result = runBiomeCheck(testDir);

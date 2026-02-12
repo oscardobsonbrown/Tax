@@ -335,18 +335,9 @@ console.log(x == y)
           const buildDir = join(projectRoot, "build");
           const distDir = join(projectRoot, "dist");
 
-          const nextFile = createTestFileWithViolations(
-            nextDir,
-            `${config.nextFile}.ts`
-          );
-          const buildFile = createTestFileWithViolations(
-            buildDir,
-            `${config.buildFile}.ts`
-          );
-          const distFile = createTestFileWithViolations(
-            distDir,
-            `${config.distFile}.ts`
-          );
+          createTestFileWithViolations(nextDir, `${config.nextFile}.ts`);
+          createTestFileWithViolations(buildDir, `${config.buildFile}.ts`);
+          createTestFileWithViolations(distDir, `${config.distFile}.ts`);
 
           // Run Biome on the entire project
           const biomeResult = runBiomeCheck(projectRoot);

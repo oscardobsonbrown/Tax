@@ -56,7 +56,6 @@ export default function TaxBreakdown({
     taxBarCounts.reduce((sum, count) => sum + count, 0) + netPayBarCount;
   const remainingBars = totalBars - usedBars;
 
-  let barIndex = 0;
   const allBars: { color: string; type: string; amount: number }[] = [];
 
   taxes.forEach((tax, idx) => {
@@ -64,18 +63,15 @@ export default function TaxBreakdown({
     const color = TAX_COLORS[idx % TAX_COLORS.length];
     for (let i = 0; i < count; i++) {
       allBars.push({ color, type: tax.name, amount: tax.amount });
-      barIndex++;
     }
   });
 
   for (let i = 0; i < netPayBarCount; i++) {
     allBars.push({ color: "bg-chart-bar", type: "Net Pay", amount: netPay });
-    barIndex++;
   }
 
   for (let i = 0; i < remainingBars; i++) {
     allBars.push({ color: "bg-chart-bar-alt", type: "Remaining", amount: 0 });
-    barIndex++;
   }
 
   return (

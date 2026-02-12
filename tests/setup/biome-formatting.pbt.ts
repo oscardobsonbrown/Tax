@@ -59,19 +59,6 @@ describe("Property 5: Biome formats code consistently", () => {
     }
   }
 
-  // Helper to check if lines respect 80-character limit (with some tolerance for long strings/imports)
-  function checkLineWidth(content: string): boolean {
-    const lines = content.split("\n");
-    // Allow some lines to exceed 80 chars (e.g., long strings, imports)
-    // But most lines should be within the limit
-    const longLines = lines.filter((line) => line.length > 80);
-    const totalLines = lines.filter((line) => line.trim().length > 0).length;
-
-    // If more than 20% of non-empty lines exceed 80 chars, formatting might be wrong
-    // This is a heuristic since some content naturally can't be wrapped
-    return longLines.length / Math.max(totalLines, 1) < 0.3;
-  }
-
   // Helper to check if indentation is 2 spaces
   function checkIndentation(content: string): boolean {
     const lines = content.split("\n");
@@ -95,38 +82,6 @@ describe("Property 5: Biome formats code consistently", () => {
         }
       }
     }
-    return true;
-  }
-
-  // Helper to check if statements end with semicolons
-  function checkSemicolons(content: string): boolean {
-    const lines = content.split("\n").map((l) => l.trim());
-
-    // Patterns that should end with semicolons
-    const statementPatterns = [
-      /^const\s+\w+\s*=\s*.+[^;{]$/, // const declarations not ending with { or ;
-      /^let\s+\w+\s*=\s*.+[^;{]$/, // let declarations
-      /^var\s+\w+\s*=\s*.+[^;{]$/, // var declarations
-      /^return\s+.+[^;]$/, // return statements
-      /^throw\s+.+[^;]$/, // throw statements
-      /^import\s+.+[^;]$/, // import statements
-      /^export\s+(?!default\s+function|function|class|interface|type).+[^;{]$/, // export statements (not function/class declarations)
-    ];
-
-    for (const line of lines) {
-      if (line.length === 0) {
-        continue;
-      }
-
-      // Check if this line matches a statement pattern that should have a semicolon
-      for (const pattern of statementPatterns) {
-        if (pattern.test(line)) {
-          // This statement should end with a semicolon but doesn't
-          return false;
-        }
-      }
-    }
-
     return true;
   }
 

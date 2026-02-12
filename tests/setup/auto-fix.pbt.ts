@@ -34,7 +34,7 @@ describe("Property 10: Auto-fix corrects violations", () => {
         encoding: "utf-8",
         stdio: "pipe",
       });
-    } catch (error: any) {
+    } catch {
       // Biome may return non-zero exit code even when fixing
       // This is okay as long as the file is modified
     }
