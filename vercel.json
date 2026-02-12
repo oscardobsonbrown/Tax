@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git log -1 --pretty=%B | grep -q \"vercel-deploy\" && exit 0 || exit 1",
+  "buildCommand": "next build",
+  "framework": "nextjs",
+  "installCommand": "npm ci"
+}
