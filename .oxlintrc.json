@@ -1,0 +1,6 @@
+{
+  "$schema": "https://oxc.rs/schemas/oxlintrc.json",
+  "extends": ["ultracite/oxlint/next"],
+  "plugins": ["nextjs"],
+  "rules": {}
+}

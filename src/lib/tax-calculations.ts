@@ -28,7 +28,7 @@ export const EXCHANGE_RATES: Record<Currency, number> = {
   AUD: 1,
   NOK: 6.8,
   USD: 0.65,
-  EUR: 0.60,
+  EUR: 0.6,
   GBP: 0.51,
   CHF: 0.58,
   MXN: 13.5,
@@ -72,23 +72,23 @@ export interface TaxResult {
 }
 
 export const norwegianTaxBrackets: TaxBracket[] = [
-  { min: 226100, max: 318300, rate: 0.017 },
-  { min: 318300, max: 725050, rate: 0.04 },
-  { min: 725050, max: 980100, rate: 0.137 },
-  { min: 980100, max: 1467200, rate: 0.168 },
-  { min: 1467200, max: null, rate: 0.178 },
+  { min: 226_100, max: 318_300, rate: 0.017 },
+  { min: 318_300, max: 725_050, rate: 0.04 },
+  { min: 725_050, max: 980_100, rate: 0.137 },
+  { min: 980_100, max: 1_467_200, rate: 0.168 },
+  { min: 1_467_200, max: null, rate: 0.178 },
 ];
 
 export const australianTaxBrackets: TaxBracket[] = [
-  { min: 0, max: 18200, rate: 0 },
-  { min: 18200, max: 45000, rate: 0.19 },
-  { min: 45000, max: 120000, rate: 0.325 },
-  { min: 120000, max: 180000, rate: 0.37 },
-  { min: 180000, max: null, rate: 0.45 },
+  { min: 0, max: 18_200, rate: 0 },
+  { min: 18_200, max: 45_000, rate: 0.19 },
+  { min: 45_000, max: 120_000, rate: 0.325 },
+  { min: 120_000, max: 180_000, rate: 0.37 },
+  { min: 180_000, max: null, rate: 0.45 },
 ];
 
-export const STANDARD_DEDUCTION = 95700;
-export const PERSONAL_ALLOWANCE = 114540;
+export const STANDARD_DEDUCTION = 95_700;
+export const PERSONAL_ALLOWANCE = 114_540;
 export const NATIONAL_INSURANCE_RATE = 0.02;
 export const GENERAL_TAX_RATE = 0.22;
 export const EMPLOYER_TAX_RATE_OSLO = 0.141;
@@ -96,7 +96,7 @@ const ANNUAL_WORKING_DAYS = 250;
 const ANNUAL_WORKING_HOURS = 2000;
 
 export const AU_MEDICARE_LEVY_RATE = 0.02;
-export const AU_MEDICARE_LEVY_LOW_INCOME_THRESHOLD = 23365;
+export const AU_MEDICARE_LEVY_LOW_INCOME_THRESHOLD = 23_365;
 export const AU_SUPERANNUATION_RATE = 0.115;
 
 // ==================== FRANCE TAX CONSTANTS ====================
@@ -238,18 +238,20 @@ export const EE_PENSION_EMPLOYEE = 0.02; // 2% employee (mandatory funded pensio
 
 export function calculateProgressiveTax(
   income: number,
-  brackets: TaxBracket[],
+  brackets: TaxBracket[]
 ) {
   let totalTax = 0;
   const breakdown: { name: string; amount: number; rate: number }[] = [];
 
   for (let i = 0; i < brackets.length; i++) {
     const bracket = brackets[i];
-    if (income <= bracket.min) break;
+    if (income <= bracket.min) {
+      break;
+    }
 
     const taxableInBracket = Math.min(
       income - bracket.min,
-      (bracket.max ?? income) - bracket.min,
+      (bracket.max ?? income) - bracket.min
     );
 
     if (taxableInBracket > 0) {
@@ -936,13 +938,13 @@ export function calculateEstonianTax(grossSalary: number): TaxResult {
 export function calculateNorwegianTax(grossSalary: number): TaxResult {
   const taxableIncome = Math.max(
     0,
-    grossSalary - STANDARD_DEDUCTION - PERSONAL_ALLOWANCE,
+    grossSalary - STANDARD_DEDUCTION - PERSONAL_ALLOWANCE
   );
 
   const nationalInsurance = grossSalary * NATIONAL_INSURANCE_RATE;
   const progressiveTax = calculateProgressiveTax(
     grossSalary,
-    norwegianTaxBrackets,
+    norwegianTaxBrackets
   );
   const generalIncomeTax = taxableIncome * GENERAL_TAX_RATE;
 
@@ -1004,11 +1006,21 @@ export function calculateNorwegianTax(grossSalary: number): TaxResult {
 }
 
 function getNorwegianMarginalTaxRate(income: number): number {
-  if (income > 1467200) return 0.178;
-  if (income > 980100) return 0.168;
-  if (income > 725050) return 0.137;
-  if (income > 318300) return 0.04;
-  if (income > 226100) return 0.017;
+  if (income > 1_467_200) {
+    return 0.178;
+  }
+  if (income > 980_100) {
+    return 0.168;
+  }
+  if (income > 725_050) {
+    return 0.137;
+  }
+  if (income > 318_300) {
+    return 0.04;
+  }
+  if (income > 226_100) {
+    return 0.017;
+  }
   return 0;
 }
 
@@ -1017,7 +1029,7 @@ export function calculateAustralianTax(grossSalary: number): TaxResult {
 
   const incomeTax = calculateProgressiveTax(
     taxableIncome,
-    australianTaxBrackets,
+    australianTaxBrackets
   );
 
   const medicareLevy =
@@ -1077,10 +1089,18 @@ export function calculateAustralianTax(grossSalary: number): TaxResult {
 }
 
 function getAustralianMarginalTaxRate(income: number): number {
-  if (income > 180000) return 0.45;
-  if (income > 120000) return 0.37;
-  if (income > 45000) return 0.325;
-  if (income > 18200) return 0.19;
+  if (income > 180_000) {
+    return 0.45;
+  }
+  if (income > 120_000) {
+    return 0.37;
+  }
+  if (income > 45_000) {
+    return 0.325;
+  }
+  if (income > 18_200) {
+    return 0.19;
+  }
   return 0;
 }
 
@@ -1097,9 +1117,11 @@ export function formatRate(rate: number): string {
 export function convertCurrency(
   amount: number,
   from: Currency,
-  to: Currency,
+  to: Currency
 ): number {
-  if (from === to) return amount;
+  if (from === to) {
+    return amount;
+  }
   const rate = EXCHANGE_RATES[to] / EXCHANGE_RATES[from];
   return amount * rate;
 }

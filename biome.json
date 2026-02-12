@@ -1,0 +1,10 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+  "extends": ["ultracite/core", "ultracite/next"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  }
+}
