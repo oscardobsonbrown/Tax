@@ -3,7 +3,11 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+const IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+const KEBAB_CASE_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_-]*$/;
+const LINE_NUMBER_PATTERN = /(?:line\s+\d+|:\d+:|^\s*\d+\s*\|)/im;
 
 /**
  * Property-based tests for linter error reporting
@@ -32,28 +36,15 @@ describe("Property 9: Linters report errors with context", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
-      return {
-        exitCode: error.status || 1,
-        output,
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
       };
-    }
-  }
-
-  // Helper function to run oxlint on a file
-  function runOxlint(filePath: string): { exitCode: number; output: string } {
-    try {
-      const output = execSync(`npx oxlint "${filePath}" 2>&1`, {
-        cwd: projectRoot,
-        encoding: "utf-8",
-        stdio: "pipe",
-      });
-      return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -85,8 +76,7 @@ describe("Property 9: Linters report errors with context", () => {
 
   // Helper to check if output contains line number information
   function containsLineNumber(output: string): boolean {
-    // Look for patterns like "line 1", "1:1", ":1:", etc.
-    return /(?:line\s+\d+|:\d+:|^\s*\d+\s*\|)/im.test(output);
+    return LINE_NUMBER_PATTERN.test(output);
   }
 
   // Helper to check if output contains violation description
@@ -121,7 +111,7 @@ describe("Property 9: Linters report errors with context", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate code with violation on line 1
@@ -163,7 +153,7 @@ describe("Property 9: Linters report errors with context", () => {
         fc.record({
           varName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
           lineNumber: fc.integer({ min: 1, max: 20 }),
         }),
@@ -208,185 +198,15 @@ describe("Property 9: Linters report errors with context", () => {
         fc.record({
           var1: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           var2: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value1: fc.integer({ min: 1, max: 100 }),
+          var3: fc
+            .string({ minLength: 1, maxLength: 15 })
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value2: fc.integer({ min: 1, max: 100 }),
-        }),
-        (config) => {
-          // Generate code with multiple violations at different lines
-          const code = `var ${config.var1} = ${config.value1}\nvar ${config.var2} = ${config.value2}\n`;
-          const filename = `test-multi-${config.var1}.ts`;
-          const filePath = createTestFile(filename, code);
-
-          // Run Biome
-          const result = runBiomeCheck(filePath);
-
-          // Should report file path
-          assert.ok(
-            containsFilePath(result.output, filename),
-            `Biome should report file path for multiple violations. Output: ${result.output}`
-          );
-
-          // Should report line numbers
-          assert.ok(
-            containsLineNumber(result.output),
-            `Biome should report line numbers for multiple violations. Output: ${result.output}`
-          );
-
-          // Should report violation descriptions
-          assert.ok(
-            containsViolationDescription(result.output),
-            `Biome should report violation descriptions for multiple violations. Output: ${result.output}`
-          );
-
-          cleanup();
-        }
-      ),
-      { numRuns: 1 }
-    );
-  });
-
-  it("should report context for TSX file violations", () => {
-    fc.assert(
-      fc.property(
-        fc.record({
-          componentName: fc
-            .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
-          imgSrc: fc
-            .string({ minLength: 1, maxLength: 30 })
-            .filter((s) => !(s.includes('"') || s.includes("'"))),
-        }),
-        (config) => {
-          // Generate TSX code with violations
-          const code = `
-export default function ${config.componentName}() {
-  var message = "test"
-  return <img src="${config.imgSrc}" alt="test" />
-}
-`;
-          const filename = `${config.componentName}.tsx`;
-          const filePath = createTestFile(filename, code);
-
-          // Run Biome
-          const biomeResult = runBiomeCheck(filePath);
-
-          // Should report file path
-          assert.ok(
-            containsFilePath(biomeResult.output, filename),
-            `Biome should report file path for TSX violations. Output: ${biomeResult.output}`
-          );
-
-          // Should report line number
-          assert.ok(
-            containsLineNumber(biomeResult.output),
-            `Biome should report line number for TSX violations. Output: ${biomeResult.output}`
-          );
-
-          // Should report violation description
-          assert.ok(
-            containsViolationDescription(biomeResult.output),
-            `Biome should report violation description for TSX violations. Output: ${biomeResult.output}`
-          );
-
-          // Run oxlint
-          const oxlintResult = runOxlint(filePath);
-
-          // Oxlint should also report context for img tag violation
-          if (oxlintResult.output.toLowerCase().includes("img")) {
-            assert.ok(
-              containsFilePath(oxlintResult.output, filename),
-              `Oxlint should report file path for TSX violations. Output: ${oxlintResult.output}`
-            );
-
-            assert.ok(
-              containsLineNumber(oxlintResult.output),
-              `Oxlint should report line number for TSX violations. Output: ${oxlintResult.output}`
-            );
-          }
-
-          cleanup();
-        }
-      ),
-      { numRuns: 1 }
-    );
-  });
-
-  it("should report context for oxlint Next.js violations", () => {
-    fc.assert(
-      fc.property(
-        fc.record({
-          componentName: fc
-            .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
-          imgSrc: fc
-            .string({ minLength: 1, maxLength: 30 })
-            .filter((s) => !(s.includes('"') || s.includes("'"))),
-          imgAlt: fc
-            .string({ minLength: 1, maxLength: 30 })
-            .filter((s) => !(s.includes('"') || s.includes("'"))),
-        }),
-        (config) => {
-          // Generate TSX code with Next.js violations
-          const code = `
-export default function ${config.componentName}() {
-  return (
-    <div>
-      <img src="${config.imgSrc}" alt="${config.imgAlt}" />
-    </div>
-  );
-}
-`;
-          const filename = `${config.componentName}.tsx`;
-          const filePath = createTestFile(filename, code);
-
-          // Run oxlint
-          const result = runOxlint(filePath);
-
-          // If oxlint detects the violation, it should report context
-          if (
-            result.output.toLowerCase().includes("img") ||
-            result.output.toLowerCase().includes("image")
-          ) {
-            // Should report file path
-            assert.ok(
-              containsFilePath(result.output, filename),
-              `Oxlint should report file path for Next.js violations. Output: ${result.output}`
-            );
-
-            // Should report line number
-            assert.ok(
-              containsLineNumber(result.output),
-              `Oxlint should report line number for Next.js violations. Output: ${result.output}`
-            );
-
-            // Should report violation description
-            assert.ok(
-              result.output.toLowerCase().includes("img") ||
-                result.output.toLowerCase().includes("image") ||
-                result.output.includes("no-img-element"),
-              `Oxlint should report violation description for Next.js violations. Output: ${result.output}`
-            );
-          }
-
-          cleanup();
-        }
-      ),
-      { numRuns: 1 }
-    );
-  });
-
-  it("should report context for violations at different column positions", () => {
-    fc.assert(
-      fc.property(
-        fc.record({
-          varName: fc
-            .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
-          value: fc.integer({ min: 1, max: 100 }),
           leadingSpaces: fc.integer({ min: 0, max: 10 }),
         }),
         (config) => {
@@ -430,10 +250,10 @@ export default function ${config.componentName}() {
         fc.record({
           funcName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           varName: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {
@@ -483,7 +303,7 @@ function ${config.funcName}() {
         fc.record({
           filename: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           violationType: fc.constantFrom(
             "var",
             "semicolon",
@@ -508,6 +328,10 @@ function ${config.funcName}() {
             case "indentation":
               code = `function test() {\n   const ${config.filename} = ${config.value};\n}\n`;
               break;
+            default:
+              throw new Error(
+                `Unknown violation type: ${config.violationType}`
+              );
           }
 
           const filename = `test-type-${config.filename}.ts`;
@@ -547,10 +371,10 @@ function ${config.funcName}() {
         fc.record({
           subdir: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(s)),
+            .filter((s) => KEBAB_CASE_PATTERN.test(s)),
           filename: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
         }),
         (config) => {

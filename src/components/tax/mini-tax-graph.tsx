@@ -1,6 +1,11 @@
 "use client";
 
-import { getTaxData, convertCurrency, formatCurrency, type Currency } from "@/lib/tax-calculations";
+import {
+  type Currency,
+  convertCurrency,
+  formatCurrency,
+  getTaxData,
+} from "@/lib/tax-calculations";
 
 interface MiniTaxGraphProps {
   countryCode: string;
@@ -17,8 +22,8 @@ export default function MiniTaxGraph({
   const localCurrency = taxData.currency;
 
   // Parse salary input or use default of 100,000
-  const salaryNum = salary ? parseInt(salary.replace(/\s/g, ""), 10) : 0;
-  const defaultSalary = 100000;
+  const salaryNum = salary ? Number.parseInt(salary.replace(/\s/g, ""), 10) : 0;
+  const defaultSalary = 100_000;
   const baseSalary = salaryNum > 0 ? salaryNum : defaultSalary;
 
   // Convert salary to local currency
@@ -32,11 +37,11 @@ export default function MiniTaxGraph({
 
   return (
     <div
-      className="w-[60px] h-3 bg-zinc-100 relative"
+      className="relative h-3 w-[60px] bg-surface"
       title={`${result.effectiveTaxRate.toFixed(1)}% effective tax rate (based on ${formatCurrency(baseSalary)} ${currency})`}
     >
       <div
-        className="h-full bg-black"
+        className="h-full bg-foreground"
         style={{ width: `${taxPercentage}%` }}
       />
     </div>

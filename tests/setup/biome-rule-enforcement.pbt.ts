@@ -3,7 +3,10 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+// Regex patterns for validation
+const IDENTIFIER_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
 /**
  * Property-based tests for Biome rule enforcement
@@ -33,12 +36,17 @@ describe("Property 4: Biome enforces ultracite rules", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Biome returns non-zero exit code when violations are found
       // Combine stdout and stderr for complete output
-      const output = (error.stdout || "") + (error.stderr || "");
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -66,7 +74,7 @@ describe("Property 4: Biome enforces ultracite rules", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.oneof(
           fc.constant("string"),
           fc.constant("number"),
@@ -112,7 +120,7 @@ describe("Property 4: Biome enforces ultracite rules", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate code without semicolons (violates ultracite formatting rules)
@@ -166,7 +174,7 @@ describe("Property 4: Biome enforces ultracite rules", () => {
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+          .filter((s) => IDENTIFIER_PATTERN.test(s)),
         fc.integer({ min: 1, max: 100 }),
         (varName, value) => {
           // Generate code with unused variable
@@ -258,7 +266,7 @@ describe("Property 4: Biome enforces ultracite rules", () => {
         fc.record({
           varName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s)),
+            .filter((s) => IDENTIFIER_PATTERN.test(s)),
           value: fc.integer({ min: 1, max: 100 }),
           useVar: fc.boolean(),
           useSemicolon: fc.boolean(),

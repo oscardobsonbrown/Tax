@@ -3,7 +3,9 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+const COMPONENT_NAME_PATTERN = /^[A-Z][a-zA-Z0-9]*$/;
 
 /**
  * Property-based tests for oxlint Next.js rule enforcement
@@ -30,11 +32,16 @@ describe("Property 6: Oxlint enforces Next.js rules", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Oxlint returns non-zero exit code when violations are found
-      const output = (error.stdout || "") + (error.stderr || "");
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -328,7 +335,7 @@ export default function TestPage() {
         fc.record({
           componentName: fc
             .string({ minLength: 1, maxLength: 20 })
-            .filter((s) => /^[A-Z][a-zA-Z0-9]*$/.test(s)),
+            .filter((s) => COMPONENT_NAME_PATTERN.test(s)),
           imgSrc: fc
             .string({ minLength: 1, maxLength: 30 })
             .filter((s) => !s.includes('"')),

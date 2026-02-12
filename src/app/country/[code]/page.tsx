@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import BracketTable from "@/components/tax/BracketTable";
-import TaxBreakdown from "@/components/tax/TaxBreakdown";
+import BracketTable from "@/components/tax/bracket-table";
+import TaxBreakdown from "@/components/tax/tax-breakdown";
 import {
   CURRENCY_SYMBOLS,
   type Currency,
@@ -31,7 +31,7 @@ export default function CountryPage() {
   const taxData = getTaxData(countryCode);
   const localCurrency = taxData.currency;
 
-  const salaryNum = Number.parseInt(salary.replace(/\s/g, "")) || 0;
+  const salaryNum = Number.parseInt(salary.replace(/\s/g, ""), 10) || 0;
   const convertedSalaryNum = convertCurrency(
     salaryNum,
     currency,

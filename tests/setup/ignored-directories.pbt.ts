@@ -3,7 +3,9 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import * as fc from "fast-check";
+import fc from "fast-check";
+
+const FILENAME_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
 /**
  * Property-based tests for linter ignored directories
@@ -31,10 +33,15 @@ describe("Property 7: Linters ignore build directories", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -49,10 +56,15 @@ describe("Property 7: Linters ignore build directories", () => {
         stdio: "pipe",
       });
       return { exitCode: 0, output };
-    } catch (error: any) {
-      const output = (error.stdout || "") + (error.stderr || "");
+    } catch (error: unknown) {
+      const execError = error as {
+        stdout?: string;
+        stderr?: string;
+        status?: number;
+      };
+      const output = (execError.stdout || "") + (execError.stderr || "");
       return {
-        exitCode: error.status || 1,
+        exitCode: execError.status || 1,
         output,
       };
     }
@@ -89,7 +101,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(projectRoot, ".next", "test-temp");
           const filePath = createTestFileWithViolations(
@@ -121,7 +133,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(
             projectRoot,
@@ -157,7 +169,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(projectRoot, "build");
           const filePath = createTestFileWithViolations(
@@ -189,7 +201,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(projectRoot, "dist");
           const filePath = createTestFileWithViolations(
@@ -221,7 +233,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(projectRoot, "out");
           const filePath = createTestFileWithViolations(
@@ -252,7 +264,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(projectRoot, ".next", "test-temp-ox");
           const filePath = createTestFileWithViolations(
@@ -284,7 +296,7 @@ console.log(x == y)
       fc.property(
         fc
           .string({ minLength: 1, maxLength: 20 })
-          .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+          .filter((s) => FILENAME_PATTERN.test(s)),
         (filename) => {
           const testDir = join(
             projectRoot,
@@ -321,13 +333,13 @@ console.log(x == y)
         fc.record({
           nextFile: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+            .filter((s) => FILENAME_PATTERN.test(s)),
           buildFile: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+            .filter((s) => FILENAME_PATTERN.test(s)),
           distFile: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+            .filter((s) => FILENAME_PATTERN.test(s)),
         }),
         (config) => {
           // Create files in multiple ignored directories
@@ -380,7 +392,7 @@ console.log(x == y)
         fc.record({
           filename: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+            .filter((s) => FILENAME_PATTERN.test(s)),
           extension: fc.constantFrom(".ts", ".tsx", ".js", ".jsx"),
         }),
         (config) => {
@@ -427,10 +439,10 @@ console.log(x == y)
         fc.record({
           subdir: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+            .filter((s) => FILENAME_PATTERN.test(s)),
           filename: fc
             .string({ minLength: 1, maxLength: 15 })
-            .filter((s) => /^[a-zA-Z0-9_-]+$/.test(s)),
+            .filter((s) => FILENAME_PATTERN.test(s)),
         }),
         (config) => {
           const testDir = join(projectRoot, ".next", "cache", config.subdir);
