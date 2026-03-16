@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type ChangeEvent, Suspense, useEffect, useRef, useState } from "react";
-import MiniTaxGraph from "@/components/tax/MiniTaxGraph";
+import MiniTaxGraph from "@/components/tax/mini-tax-graph";
 import { CURRENCY_NAMES, type Currency } from "@/lib/tax-calculations";
 
 const DEFAULT_SALARY = "100000";
