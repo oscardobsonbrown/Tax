@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type ChangeEvent, Suspense, useEffect, useRef, useState } from "react";
-import MiniTaxGraph from "@/components/tax/mini-tax-graph";
+import MiniTaxGraph from "@/components/tax/MiniTaxGraph";
 import { CURRENCY_NAMES, type Currency } from "@/lib/tax-calculations";
 
 const DEFAULT_SALARY = "100000";
@@ -11,7 +11,7 @@ const DEFAULT_SALARY = "100000";
 // Format number with spaces as thousands separator
 function formatNumberWithSpaces(value: string): string {
   const num = Number.parseInt(value.replace(/\s/g, ""), 10);
-  if (Number.isNaN(num)) {
+  if (isNaN(num)) {
     return value;
   }
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -147,7 +147,6 @@ function HomeContent() {
   };
 
   // Update URL with default salary if not provided
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally omitted dependencies for one-time mount effect
   useEffect(() => {
     if (!searchParams.get("salary")) {
       updateUrl(DEFAULT_SALARY, wealthInput.rawValue, currency);
@@ -172,9 +171,9 @@ function HomeContent() {
   }: CountryCardProps) {
     return (
       <Link className="no-underline" href={getCountryUrl(countryCode)}>
-        <div className="flex items-center justify-between border border-border px-[15px] py-4 transition-colors hover:border-hover">
+        <div className="flex items-center justify-between border border-gray-300 px-[15px] py-4 transition-colors hover:border-gray-400">
           <div className="flex items-center gap-2">
-            <div className="text-foreground">
+            <div className="text-black">
               {countryCode === "no" && "🇳🇴"}
               {countryCode === "au" && "🇦🇺"}
               {countryCode === "fr" && "🇫🇷"}
@@ -187,8 +186,8 @@ function HomeContent() {
               {countryCode === "jp" && "🇯🇵"}
               {countryCode === "ee" && "🇪🇪"}
             </div>
-            <div className="text-foreground">{countryName}</div>
-            <div className="text-muted text-xs">({year})</div>
+            <div className="text-black">{countryName}</div>
+            <div className="text-xs text-zinc-500">({year})</div>
           </div>
           <div className="flex items-center gap-4">
             <MiniTaxGraph
@@ -196,7 +195,7 @@ function HomeContent() {
               currency={currency}
               salary={salary}
             />
-            <div className="text-foreground">{"->"}</div>
+            <div className="text-black">{"->"}</div>
           </div>
         </div>
       </Link>
@@ -204,42 +203,42 @@ function HomeContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
-      <div className="w-full max-w-[562px] border-border border-b pb-4">
-        <div className="text-foreground">TAX</div>
-        <div className="text-muted">
+    <div className="flex min-h-screen flex-col items-center bg-white px-4 py-8 pb-32 font-mono text-sm antialiased sm:px-8">
+      <div className="w-full max-w-[562px] border-gray-200 border-b pb-4">
+        <div className="text-black">TAX</div>
+        <div className="text-zinc-500">
           Calculate, visualize, and compare global taxes
         </div>
       </div>
 
       <div className="mt-8 w-full max-w-[562px]">
         <button
-          className="flex w-full items-center justify-between border border-border px-4 py-3 transition-colors hover:border-hover"
+          className="flex w-full items-center justify-between border border-gray-300 px-4 py-3 transition-colors hover:border-gray-400"
           onClick={() => setDetailsOpen(!detailsOpen)}
           type="button"
         >
           <div className="flex items-center gap-3">
-            <span className="text-foreground">YOUR DETAILS</span>
+            <span className="text-black">YOUR DETAILS</span>
             {!detailsOpen && (salaryInput.rawValue || wealthInput.rawValue) && (
-              <span className="text-muted text-xs">
+              <span className="text-xs text-zinc-500">
                 {salaryInput.displayValue || "0"} ({currency}){" "}
                 {wealthInput.displayValue &&
                   `/ ${wealthInput.displayValue} (${currency})`}
               </span>
             )}
           </div>
-          <span className="text-muted-light text-xs">
+          <span className="text-xs text-zinc-400">
             {detailsOpen ? "−" : "+"}
           </span>
         </button>
 
         {detailsOpen && (
-          <div className="border-border border-x border-b px-4 py-4">
+          <div className="border-gray-300 border-x border-b px-4 py-4">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <div className="text-muted text-xs">Currency</div>
+                <div className="text-xs text-zinc-500">Currency</div>
                 <select
-                  className="border border-border bg-surface px-3 py-2 text-foreground text-sm outline-none transition-colors hover:border-hover focus:border-hover"
+                  className="border border-gray-300 bg-white px-3 py-2 text-black text-sm outline-none transition-colors hover:border-gray-400 focus:border-black"
                   onChange={(e) =>
                     handleCurrencyChange(e.target.value as Currency)
                   }
@@ -253,9 +252,9 @@ function HomeContent() {
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-muted text-xs">Gross income</div>
+                <div className="text-xs text-zinc-500">Gross income</div>
                 <input
-                  className="border border-border px-3 py-2 text-foreground text-sm outline-none transition-colors hover:border-hover focus:border-hover"
+                  className="border border-gray-300 px-3 py-2 text-black text-sm outline-none transition-colors hover:border-gray-400 focus:border-black"
                   onChange={(e) =>
                     salaryInput.handleChange(e, (raw) =>
                       updateUrl(raw, wealthInput.rawValue, currency)
@@ -268,9 +267,9 @@ function HomeContent() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-muted text-xs">Net wealth</div>
+                <div className="text-xs text-zinc-500">Net wealth</div>
                 <input
-                  className="border border-border px-3 py-2 text-foreground text-sm outline-none transition-colors hover:border-hover focus:border-hover"
+                  className="border border-gray-300 px-3 py-2 text-black text-sm outline-none transition-colors hover:border-gray-400 focus:border-black"
                   onChange={(e) =>
                     wealthInput.handleChange(e, (raw) =>
                       updateUrl(salaryInput.rawValue, raw, currency)
@@ -288,7 +287,7 @@ function HomeContent() {
       </div>
 
       <div className="mt-8 w-full max-w-[562px]">
-        <div className="mb-6 text-foreground">COUNTRIES</div>
+        <div className="mb-6 text-black">COUNTRIES</div>
         <div className="flex flex-col gap-2">
           <CountryCard
             countryCode="no"
@@ -371,12 +370,12 @@ function HomeContent() {
       </div>
 
       <div className="mt-16 flex flex-col items-center gap-3 text-center">
-        <div className="h-[25px] w-[25px] rounded-[7px] bg-muted-darker" />
-        <div className="text-muted">
+        <div className="h-[25px] w-[25px] rounded-[7px] bg-gray-300" />
+        <div className="text-zinc-500">
           Tax calculators and visualizations for informational purposes only
         </div>
-        <div className="text-muted">©2026</div>
-        <div className="text-muted">- Oscar</div>
+        <div className="text-zinc-500">©2026</div>
+        <div className="text-zinc-500">- Oscar</div>
       </div>
     </div>
   );
@@ -386,7 +385,7 @@ export default function Home() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-background font-mono text-muted text-sm">
+        <div className="flex min-h-screen items-center justify-center bg-white font-mono text-sm text-zinc-500">
           Loading...
         </div>
       }

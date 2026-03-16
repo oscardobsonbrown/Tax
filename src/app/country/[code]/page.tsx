@@ -51,8 +51,8 @@ export default function CountryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8 font-mono text-[12px] text-foreground leading-4 sm:px-8">
-      <div className="mx-auto max-w-[512px] p-0">
+    <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 pb-32 font-mono text-[12px] text-foreground leading-4 sm:px-8">
+      <div className="w-full max-w-[562px]">
         <div className="mb-4 cursor-pointer text-muted-light hover:text-foreground">
           <Link
             className="hover:underline"
